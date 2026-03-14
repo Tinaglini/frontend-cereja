@@ -1,0 +1,51 @@
+@import '../../../../styles/variables';
+
+.stepper-container {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.step-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  font-size: 1.1rem;
+  transition: all 0.3s ease;
+}
+
+.option-card {
+  &:hover {
+    border-color: rgba($color-primary, 0.5) !important;
+    transform: translateY(-2px);
+  }
+}
+
+.check-indicator {
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.border-primary + .check-indicator,
+.border-primary .check-indicator {
+  opacity: 1;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.transition-all {
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-accent {
+  background-color: $color-accent;
+  border-color: $color-accent;
+  color: white;
+
+  &:hover {
+    background-color: darken($color-accent, 10%);
+    border-color: darken($color-accent, 10%);
+    color: white;
+  }
+}

@@ -1,0 +1,209 @@
+<div class="stepper-container fade-in py-3">
+  
+  <div class="d-flex justify-content-between align-items-end mb-4 pb-3 border-bottom border-black border-opacity-10">
+    <div>
+      <h2 class="display-font text-dark mb-1">Solicitar Orçamento</h2>
+      <p class="text-muted mb-0">Siga os passos para nos contar sobre sua festa.</p>
+    </div>
+    <button class="btn btn-outline-secondary shadow-sm" routerLink="/meus-orcamentos">
+      Cancelar
+    </button>
+  </div>
+
+  <!-- Stepper Progress Header -->
+  <div class="stepper-progress mb-5" *ngIf="!loadingData">
+    <div class="d-flex justify-content-between position-relative">
+      <div class="progress position-absolute w-100" style="height: 4px; top: 15px; z-index: 0; background-color: #e9ecef;">
+        <div class="progress-bar bg-primary transition-all" role="progressbar" 
+             [style.width]="((step - 1) / (maxSteps - 1)) * 100 + '%'"></div>
+      </div>
+      
+      <!-- Passo 1 -->
+      <div class="step-item text-center flex-fill position-relative" style="z-index: 1;">
+         <div class="step-circle mx-auto d-flex align-items-center justify-content-center text-white fw-bold shadow-sm"
+              [ngClass]="step >= 1 ? 'bg-primary' : 'bg-secondary'">1</div>
+         <span class="d-block mt-2 small fw-medium" [ngClass]="step >= 1 ? 'text-primary' : 'text-muted'">O Evento</span>
+      </div>
+      
+      <!-- Passo 2 -->
+      <div class="step-item text-center flex-fill position-relative" style="z-index: 1;">
+         <div class="step-circle mx-auto d-flex align-items-center justify-content-center text-white fw-bold shadow-sm"
+              [ngClass]="step >= 2 ? 'bg-primary' : 'bg-secondary'">2</div>
+         <span class="d-block mt-2 small fw-medium" [ngClass]="step >= 2 ? 'text-primary' : 'text-muted'">Data e Público</span>
+      </div>
+
+      <!-- Passo 3 -->
+      <div class="step-item text-center flex-fill position-relative" style="z-index: 1;">
+         <div class="step-circle mx-auto d-flex align-items-center justify-content-center text-white fw-bold shadow-sm"
+              [ngClass]="step >= 3 ? 'bg-primary' : 'bg-secondary'">3</div>
+         <span class="d-block mt-2 small fw-medium" [ngClass]="step >= 3 ? 'text-primary' : 'text-muted'">Tema / Detalhes</span>
+      </div>
+
+      <!-- Passo 4 -->
+      <div class="step-item text-center flex-fill position-relative" style="z-index: 1;">
+         <div class="step-circle mx-auto d-flex align-items-center justify-content-center text-white fw-bold shadow-sm"
+              [ngClass]="step >= 4 ? 'bg-primary' : 'bg-secondary'">4</div>
+         <span class="d-block mt-2 small fw-medium" [ngClass]="step >= 4 ? 'text-primary' : 'text-muted'">Revisão</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="text-center py-5" *ngIf="loadingData">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Carregando...</span>
+    </div>
+  </div>
+
+  <!-- CONTEÚDO DOS PASSOS -->
+  <div class="stepper-content bg-white p-4 p-md-5 rounded-4 shadow-sm border border-light" *ngIf="!loadingData">
+      
+      <!-- PASSO 1: TIPO DE EVENTO -->
+      <div class="step-pane fade-in" *ngIf="step === 1">
+         <h4 class="fw-bold text-dark mb-4 text-center">Que tipo de evento você quer realizar?</h4>
+         
+         <div class="row g-4 justify-content-center">
+            <div class="col-md-4 col-sm-6" *ngFor="let tipo of tiposEvento">
+               <div class="card h-100 cursor-pointer border-2 transition-all option-card"
+                    [class.border-primary]="solicitacao.tipoEventoId === tipo.id"
+                    [class.bg-primary-soft]="solicitacao.tipoEventoId === tipo.id"
+                    (click)="selecionarTipo(tipo.id)">
+                  <div class="card-body text-center p-4">
+                     <div class="icon-circle mx-auto mb-3 text-primary d-flex align-items-center justify-content-center"
+                          style="width: 60px; height: 60px; background-color: rgba(219, 39, 119, 0.1); border-radius: 50%;">
+                        <i class="fas fa-glass-cheers fs-3"></i>
+                     </div>
+                     <h6 class="fw-bold text-dark mb-2">{{ tipo.nome }}</h6>
+                     <p class="small text-muted mb-0">Capacidade max: {{ tipo.capacidadeMaxima }} convidados</p>
+                  </div>
+                  
+                  <div class="check-indicator position-absolute top-0 end-0 mt-2 me-2 text-primary" *ngIf="solicitacao.tipoEventoId === tipo.id">
+                      <i class="fas fa-check-circle fs-5"></i>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+
+      <!-- PASSO 2: DATA E CONVIDADOS -->
+      <div class="step-pane fade-in" *ngIf="step === 2">
+          <h4 class="fw-bold text-dark mb-4 text-center">Quando e para quantas pessoas?</h4>
+          
+          <div class="row justify-content-center">
+            <div class="col-md-8">
+              <div class="row g-4 mb-4">
+                <div class="col-sm-6">
+                  <div class="form-floating">
+                    <input type="date" class="form-control" id="dataEvento" [(ngModel)]="solicitacao.dataEvento">
+                    <label for="dataEvento">Data do Evento *</label>
+                  </div>
+                </div>
+                
+                <div class="col-sm-6">
+                  <div class="form-floating">
+                    <input type="number" class="form-control" id="numConvidados" [(ngModel)]="solicitacao.numeroConvidados" min="1">
+                    <label for="numConvidados">Qtd. Convidados *</label>
+                  </div>
+                  <small class="text-muted mt-1 px-1 d-block"><i class="fas fa-info-circle me-1"></i> Influencia no mobiliário e buffet.</small>
+                </div>
+              </div>
+            </div>
+          </div>
+      </div>
+
+      <!-- PASSO 3: TEMA E DETALHES -->
+      <div class="step-pane fade-in" *ngIf="step === 3">
+          <h4 class="fw-bold text-dark mb-4 text-center">Gostaria de algum tema específico?</h4>
+          
+          <div class="mb-4 text-center">
+             <p class="text-muted">Selecione um dos nossos temas pré-montados ou pule esta etapa para orçar um tema personalizado.</p>
+             <button class="btn btn-sm btn-outline-secondary rounded-pill" (click)="solicitacao.temaFestaId = undefined" *ngIf="solicitacao.temaFestaId">
+                Remover Tema Selecionado
+             </button>
+          </div>
+
+          <!-- Tema Grid (Scrollable) -->
+          <div class="tema-selector-container px-2 mb-4" style="max-height: 400px; overflow-y: auto;">
+            <div class="row g-3">
+              <div class="col-6 col-md-4 col-lg-3" *ngFor="let tema of temas">
+                  <div class="card cursor-pointer border-2 transition-all option-card text-center"
+                       [class.border-primary]="solicitacao.temaFestaId === tema.id"
+                       (click)="selecionarTema(tema.id)">
+                      <div class="card-body p-3">
+                         <div class="color-circle mx-auto mb-2 shadow-sm border" 
+                              [style.background-color]="tema.corPrincipal" 
+                              style="width: 30px; height: 30px; border-radius: 50%;"></div>
+                         <span class="d-block fw-bold small text-dark lh-sm">{{ tema.nome }}</span>
+                      </div>
+                      
+                      <div class="check-indicator position-absolute top-0 end-0 mt-1 me-1 text-primary" *ngIf="solicitacao.temaFestaId === tema.id">
+                          <i class="fas fa-check-circle"></i>
+                      </div>
+                  </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row justify-content-center">
+            <div class="col-md-8">
+              <div class="form-floating">
+                <textarea class="form-control" id="observacoes" [(ngModel)]="solicitacao.observacoes" style="height: 100px"
+                          placeholder="Ex: Quero cores neon, sem glúten..."></textarea>
+                <label for="observacoes">Mais detalhes sobre o que você deseja (Alergias, preferências, etc)</label>
+              </div>
+            </div>
+          </div>
+      </div>
+
+      <!-- PASSO 4: REVISÃO E ENVIO -->
+      <div class="step-pane fade-in" *ngIf="step === 4">
+          <h4 class="fw-bold text-dark mb-4 text-center text-primary">Pronto! Confirme os dados</h4>
+          
+          <div class="row justify-content-center">
+            <div class="col-md-8">
+               
+               <ul class="list-group list-group-light list-group-small mb-4 border rounded shadow-sm">
+                 <li class="list-group-item px-4 py-3 d-flex justify-content-between align-items-sm-center flex-column flex-sm-row">
+                   <span class="text-muted fw-bold">Tipo de Evento:</span>
+                   <span class="fw-medium text-dark">{{ getTipoNome() }}</span>
+                 </li>
+                 <li class="list-group-item px-4 py-3 d-flex justify-content-between align-items-sm-center flex-column flex-sm-row">
+                   <span class="text-muted fw-bold">Data Planejada:</span>
+                   <span class="fw-medium text-dark">{{ solicitacao.dataEvento | date:'dd/MM/yyyy' }}</span>
+                 </li>
+                 <li class="list-group-item px-4 py-3 d-flex justify-content-between align-items-sm-center flex-column flex-sm-row">
+                   <span class="text-muted fw-bold">Convidados:</span>
+                   <span class="fw-medium text-dark">{{ solicitacao.numeroConvidados }} pessoas</span>
+                 </li>
+                 <li class="list-group-item px-4 py-3 d-flex justify-content-between align-items-sm-center flex-column flex-sm-row">
+                   <span class="text-muted fw-bold">Tema Principal:</span>
+                   <span class="fw-medium text-dark">{{ getTemaNome() }}</span>
+                 </li>
+               </ul>
+
+               <div class="bg-light p-3 rounded" *ngIf="solicitacao.observacoes">
+                 <strong class="d-block text-muted small mb-1">Notas adicionais:</strong>
+                 <p class="mb-0 text-dark small" style="white-space: pre-wrap;">{{ solicitacao.observacoes }}</p>
+               </div>
+
+            </div>
+          </div>
+      </div>
+      
+      <!-- Footer Navigators -->
+      <div class="step-nav-footer mt-5 pt-4 border-top d-flex justify-content-between">
+         <button class="btn btn-light px-4" (click)="prevStep()" [disabled]="step === 1 || submitting">
+            <i class="fas fa-arrow-left me-2"></i> Anterior
+         </button>
+         
+         <button class="btn btn-primary px-5" (click)="nextStep()" *ngIf="step < maxSteps">
+            Próximo <i class="fas fa-arrow-right ms-2"></i>
+         </button>
+
+         <button class="btn btn-accent px-5 fw-bold" (click)="enviarSolicitacao()" *ngIf="step === maxSteps" [disabled]="submitting">
+            <span *ngIf="!submitting"><i class="fas fa-paper-plane me-2"></i> Enviar Solicitação</span>
+            <span *ngIf="submitting"><i class="fas fa-spinner fa-spin me-2"></i> Enviando...</span>
+         </button>
+      </div>
+
+  </div>
+</div>

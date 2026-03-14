@@ -1,0 +1,87 @@
+<div class="customer-orcamentos-container fade-in">
+  
+  <div class="d-flex justify-content-between align-items-end mb-4 pb-3 border-bottom border-black border-opacity-10">
+    <div>
+      <h2 class="display-font text-dark mb-1">Meus Orçamentos</h2>
+      <p class="text-muted mb-0">Acompanhe o status das suas solicitações de festa.</p>
+    </div>
+    
+    <button class="btn btn-primary shadow-sm px-4" routerLink="/solicitar-orcamento">
+      <i class="fas fa-plus-circle me-2"></i> Solicitar Novo
+    </button>
+  </div>
+
+  <!-- Loading State -->
+  <div class="text-center py-5" *ngIf="loading">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Carregando...</span>
+    </div>
+    <p class="text-muted mt-3">Buscando seus orçamentos...</p>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-state text-center py-5 bg-white rounded-4 shadow-sm" *ngIf="!loading && orcamentos.length === 0">
+    <div class="empty-icon text-muted opacity-50 mb-4" style="font-size: 4rem;">
+      <i class="fas fa-box-open"></i>
+    </div>
+    <h4 class="text-dark fw-bold">Nenhum orçamento encontrado</h4>
+    <p class="text-muted mb-4 max-w-500 mx-auto">
+      Você ainda não fez nenhuma solicitação de orçamento conosco. Que tal começarmos a planejar sua próxima festa?
+    </p>
+    <button class="btn btn-outline-primary" routerLink="/solicitar-orcamento">
+      Fazer minha primeira solicitação
+    </button>
+  </div>
+
+  <!-- Orcamentos Grid -->
+  <div class="row g-4" *ngIf="!loading && orcamentos.length > 0">
+    <div class="col-md-6 col-xl-4" *ngFor="let orc of orcamentos">
+      
+      <div class="card h-100 border-0 shadow-sm orcamento-card">
+        
+        <!-- Status Ribbon/Badge Header -->
+        <div class="card-header bg-white border-0 pt-4 px-4 d-flex justify-content-between align-items-center">
+            <span class="badge rounded-pill px-3 py-2 fw-medium border shadow-none" [ngClass]="getStatusClass(orc.status)">
+              <i [class]="getStatusIcon(orc.status) + ' me-1'"></i> {{ orc.status }}
+            </span>
+            <span class="text-muted small fw-medium">#{{ orc.id }}</span>
+        </div>
+
+        <div class="card-body px-4 pb-4">
+          <h5 class="fw-bold text-dark mt-2 mb-3 align-items-center d-flex">
+             <i class="fas fa-calendar-check text-primary me-2"></i>
+             {{ orc.tipoEvento?.nome }}
+          </h5>
+          
+          <div class="d-flex flex-column gap-2 mb-4">
+            <div class="d-flex align-items-center text-secondary">
+              <i class="fas fa-calendar-day w-20px text-center me-2 text-muted"></i>
+              <span><strong>Data:</strong> {{ orc.dataEvento | date:'dd/MM/yyyy' }}</span>
+            </div>
+            
+            <div class="d-flex align-items-center text-secondary">
+              <i class="fas fa-users w-20px text-center me-2 text-muted"></i>
+              <span><strong>Convidados:</strong> {{ orc.numeroConvidados }}</span>
+            </div>
+            
+            <div class="d-flex align-items-center text-secondary" *ngIf="orc.temaFesta">
+              <i class="fas fa-palette w-20px text-center me-2 text-muted"></i>
+              <span><strong>Tema:</strong> {{ orc.temaFesta.nome }}</span>
+            </div>
+          </div>
+          
+        </div>
+        
+        <div class="card-footer bg-light border-0 py-3 px-4 d-flex justify-content-between align-items-center rounded-bottom-4">
+           <small class="text-muted"><i class="fas fa-history me-1"></i> Alterado em breve</small>
+           <button class="btn btn-sm btn-link text-primary text-decoration-none p-0 fw-bold" routerLink="/solicitar-orcamento" [queryParams]="{view: orc.id}">
+             Ver Resumo <i class="fas fa-arrow-right ms-1"></i>
+           </button>
+        </div>
+
+      </div>
+      
+    </div>
+  </div>
+
+</div>

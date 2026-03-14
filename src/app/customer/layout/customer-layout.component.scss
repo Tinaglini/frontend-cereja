@@ -1,0 +1,46 @@
+.navbar {
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+
+  .nav-link {
+    color: #4b5563 !important; // $color-gray-600
+    padding: 0.5rem 1rem !important;
+    border-radius: 0.5rem; // $border-radius-base
+    transition: all 0.2s ease;
+
+    &:hover {
+      color: var(--color-primary) !important;
+      background-color: rgba(219, 39, 119, 0.05); // rgba($color-primary, 0.05)
+    }
+
+    &.active {
+      color: var(--color-primary) !important;
+      background-color: rgba(219, 39, 119, 0.1); // rgba($color-primary, 0.1)
+      font-weight: 600 !important;
+    }
+
+    &.text-accent {
+      color: #0D8ABC !important; // $color-accent
+      font-weight: 600 !important;
+      background-color: rgba(13, 138, 188, 0.05); // rgba($color-accent, 0.05)
+      border: 1px solid rgba(13, 138, 188, 0.2); // rgba($color-accent, 0.2)
+
+      &:hover, &.active {
+        background-color: #0D8ABC; // $color-accent
+        color: white !important;
+      }
+    }
+  }
+
+  .navbar-toggler {
+    &:focus {
+      box-shadow: none;
+    }
+  }
+}
+
+// Media query constraints para simular dropdown-menu-end
+@media (max-width: 991.98px) {
+  .border-lg-none {
+    border: none !important;
+  }
+}

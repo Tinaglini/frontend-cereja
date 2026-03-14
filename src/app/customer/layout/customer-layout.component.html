@@ -1,0 +1,82 @@
+<!-- Navbar do Cliente -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary-soft shadow-sm py-3" style="background-color: #fff;">
+  <div class="container">
+    
+    <!-- Logo -->
+    <a class="navbar-brand d-flex align-items-center" routerLink="/meus-orcamentos">
+      <div class="logo-icon bg-primary text-white rounded me-2 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+        <i class="fas fa-birthday-cake fs-5"></i>
+      </div>
+      <div>
+        <h6 class="mb-0 text-dark fw-bold display-font" style="letter-spacing: -0.5px;">Cereja Festas</h6>
+        <small class="text-primary d-block" style="font-size: 0.70rem; font-weight: 500;">Área do Cliente</small>
+      </div>
+    </a>
+
+    <!-- Botão Mobile -->
+    <button class="navbar-toggler text-dark border-0 shadow-none" type="button" (click)="toggleMenu()">
+      <i class="fas fa-bars fs-4"></i>
+    </button>
+
+    <!-- Menu Links -->
+    <div class="collapse navbar-collapse" [class.show]="isMenuOpen">
+      <ul class="navbar-nav mx-auto mb-2 mb-lg-0 gap-1 gap-lg-3">
+        <li class="nav-item">
+          <a class="nav-link fw-medium" routerLink="/meus-orcamentos" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+            <i class="fas fa-file-invoice-dollar me-1"></i> Meus Orçamentos
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link fw-medium text-accent" routerLink="/solicitar-orcamento" routerLinkActive="active">
+            <i class="fas fa-plus-circle me-1"></i> Solicitar Orçamento
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link fw-medium" routerLink="/cliente/temas" routerLinkActive="active">
+            <i class="fas fa-palette me-1"></i> Temas
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link fw-medium" routerLink="/cliente/tipos-evento" routerLinkActive="active">
+             <i class="fas fa-calendar-alt me-1"></i> Eventos
+          </a>
+        </li>
+      </ul>
+
+      <!-- Perfil / Avatar -->
+      <div class="d-flex align-items-center mt-3 mt-lg-0 pb-3 pb-lg-0 border-top border-lg-none pt-3 pt-lg-0">
+        <div class="dropdown">
+          <button class="btn btn-link text-decoration-none text-dark d-flex align-items-center p-0" type="button" id="userMenuButton" data-mdb-dropdown-init data-mdb-ripple-init aria-expanded="false">
+            <div class="text-end me-3 d-none d-sm-block">
+              <span class="d-block fw-bold" style="font-size: 0.9rem;">Olá, {{ userName || 'Cliente' }}</span>
+              <span class="d-block text-muted" style="font-size: 0.75rem;">{{ userEmail }}</span>
+            </div>
+            <img src="https://ui-avatars.com/api/?name={{ userName || 'User' }}&background=0D8ABC&color=fff&rounded=true" 
+                 class="rounded-circle shadow-sm border border-2 border-white" height="42" alt="Avatar"/>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2" aria-labelledby="userMenuButton">
+            <li>
+              <a class="dropdown-item py-2" routerLink="/meu-perfil">
+                <i class="fas fa-user-circle text-muted me-2"></i> Meu Perfil
+              </a>
+            </li>
+            <li><hr class="dropdown-divider"></li>
+            <li>
+              <a class="dropdown-item text-danger py-2" href="javascript:void(0)" (click)="logout()">
+                <i class="fas fa-sign-out-alt me-2"></i> Sair
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</nav>
+
+<!-- Conteúdo Principal -->
+<main class="customer-content-area py-5" style="background-color: #f8f9fa; min-height: calc(100vh - 84px);">
+  <div class="container">
+    <router-outlet></router-outlet>
+  </div>
+</main>
