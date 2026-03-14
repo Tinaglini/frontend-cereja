@@ -4,6 +4,7 @@ import { Observable, BehaviorSubject } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { LoginRequest, LoginResponse, Usuario } from '../models/usuario.model';
 import { environment } from '../../environments/environment';
+import { jwtDecode } from 'jwt-decode';
 
 @Injectable({
   providedIn: 'root'
@@ -70,6 +71,36 @@ export class AuthService {
   // Método para obter dados do usuário atual (síncrono)
   getCurrentUserValue(): Usuario | null {
     return this.currentUser.value;
+  }
+
+  // Verifica qual a role do token decodificado
+  getUserRole(): string | null {
+    const token = this.getToken();
+    if (!token) return null;
+    try {
+      const decodedToken: any = jwtDecode(token);
+      // spring boot JWT costuma colocar as roles em um claim de array ou comma-separated string
+      // Vamos tentar algumas convenções comuns, dependendo de como o backend gerou
+      // Se houver múltiplas, pegaremos a de maior privilégio 
+      const authClaim = decodedToken.roles || decodedToken.authorities || decodedToken.scope || '';
+      
+      if (Array.isArray(authClaim)) {
+        if (authClaim.includes('ROLE_ADMIN')) return 'ROLE_ADMIN';
+        if (authClaim.includes('ROLE_USER')) return 'ROLE_USER';
+        return authClaim[0] || null;
+      }
+      
+      if (typeof authClaim === 'string') {
+        if (authClaim.includes('ROLE_ADMIN')) return 'ROLE_ADMIN';
+        if (authClaim.includes('ROLE_USER')) return 'ROLE_USER';
+        return authClaim;
+      }
+
+      return null;
+    } catch (e) {
+      console.error('Erro ao decodificar token', e);
+      return null;
+    }
   }
 
   private hasToken(): boolean {

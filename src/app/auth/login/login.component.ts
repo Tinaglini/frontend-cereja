@@ -46,7 +46,12 @@ export class LoginComponent {
           timer: 1500,
           showConfirmButton: false
         }).then(() => {
-          this.router.navigate(['/dashboard']);
+          const role = this.authService.getUserRole();
+          if (role === 'ROLE_ADMIN') {
+            this.router.navigate(['/dashboard']);
+          } else {
+            this.router.navigate(['/meus-orcamentos']);
+          }
         });
       },
       error: (errorResponse) => { // <-- Renomeei para errorResponse para ficar mais claro

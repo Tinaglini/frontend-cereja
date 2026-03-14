@@ -1,66 +1,78 @@
-
-
-
-<div class="login-container">
-  <div class="login-card scale-up">
-    <div class="login-header">
-      <i class="fas fa-birthday-cake login-icon"></i>
-      <h1 class="login-title">Tia Cereja</h1>
-      <p class="login-subtitle">Sistema de Gestão de Festas</p>
+<div class="login-container fade-in">
+  <div class="login-overlay"></div>
+  
+  <div class="login-wrapper">
+    <!-- Lado Esquerdo: Branding/Imagem -->
+    <div class="login-brand-side d-none d-lg-flex">
+      <div class="brand-content fade-in-down">
+        <div class="logo-wrapper mb-4">
+          <i class="fas fa-gift text-accent"></i>
+        </div>
+        <h1 class="brand-title">Cereja Festas</h1>
+        <p class="brand-subtitle">Elegância e organização para eventos inesquecíveis.</p>
+      </div>
     </div>
-    
-    <form class="login-form" (ngSubmit)="login()" #loginForm="ngForm">
-      <div class="form-group">
-        <label for="email" class="form-label">
-          <i class="fas fa-envelope me-2"></i>
-          Email
-        </label>
-        <input 
-          type="email" 
-          id="email" 
-          class="form-control" 
-          [(ngModel)]="credentials.login" 
-          name="login"
-          required
-          email
-          placeholder="Digite seu email">
+
+    <!-- Lado Direito: Formulário -->
+    <div class="login-form-side">
+      <div class="login-card scale-up">
+        
+        <div class="login-header text-center d-lg-none mb-4">
+          <i class="fas fa-gift text-accent login-icon mb-2"></i>
+          <h2 class="login-title-mobile">Cereja Festas</h2>
+        </div>
+
+        <div class="form-header mb-4">
+          <h3 class="fw-bold text-dark">Bem-vindo</h3>
+          <p class="text-muted">Faça login para gerenciar o sistema</p>
+        </div>
+        
+        <form class="login-form" (ngSubmit)="login()" #loginForm="ngForm">
+          <!-- Floating Label MDB/Bootstrap 5 -->
+          <div class="form-floating mb-4">
+            <input 
+              type="email" 
+              class="form-control" 
+              id="email" 
+              [(ngModel)]="credentials.login" 
+              name="login"
+              required
+              email
+              placeholder="nome@exemplo.com">
+            <label for="email"><i class="fas fa-envelope me-2 text-muted"></i>Email</label>
+          </div>
+          
+          <div class="form-floating mb-4">
+            <input 
+              type="password" 
+              class="form-control" 
+              id="senha" 
+              [(ngModel)]="credentials.senha" 
+              name="senha"
+              required
+              placeholder="Senha">
+            <label for="senha"><i class="fas fa-lock me-2 text-muted"></i>Senha</label>
+          </div>
+          
+          <button 
+            type="submit" 
+            class="btn btn-primary btn-login w-100 mt-2"
+            [disabled]="loginForm.invalid || loading">
+            <span *ngIf="!loading">
+              Acessar Sistema <i class="fas fa-arrow-right ms-2"></i>
+            </span>
+            <span *ngIf="loading">
+              <i class="fas fa-spinner fa-spin me-2"></i> Entrando...
+            </span>
+          </button>
+        </form>
+        
+        <div class="login-footer text-center mt-5">
+          <p class="text-muted small">
+            &copy; 2026 Cereja Festas. Todos os direitos reservados.
+          </p>
+        </div>
       </div>
-      
-      <div class="form-group">
-        <label for="password" class="form-label">
-          <i class="fas fa-lock me-2"></i>
-          Senha
-        </label>
-        <input 
-          type="password" 
-          id="senha" 
-          class="form-control" 
-          [(ngModel)]="credentials.senha" 
-          name="senha"
-          required
-          placeholder="Digite sua senha">
-      </div>
-      
-      <button 
-        type="submit" 
-        class="btn btn-primary btn-login"
-        [disabled]="loginForm.invalid || loading">
-        <span *ngIf="!loading">
-          <i class="fas fa-sign-in-alt me-2"></i>
-          Entrar
-        </span>
-        <span *ngIf="loading">
-          <i class="fas fa-spinner fa-spin me-2"></i>
-          Entrando...
-        </span>
-      </button>
-    </form>
-    
-    <div class="login-footer">
-      <p class="text-muted">
-        <i class="fas fa-info-circle me-1"></i>
-        Entre com suas credenciais para acessar o sistema
-      </p>
     </div>
   </div>
 </div>
