@@ -1,16 +1,14 @@
-/* You can add global styles to this file, and also import other style files */
+@import 'styles/variables';
 
-// Variáveis CSS para animações
+// ==========================================
+// CEREJA FESTAS - GLOBAL STYLES
+// ==========================================
+
 :root {
-  --transition: all 0.25s ease-in-out;
-  --elastic: cubic-bezier(0.25, 1, 0.5, 1);
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.12);
-  --shadow-md: 0 3px 6px rgba(0, 0, 0, 0.16);
-  --shadow-lg: 0 8px 12px rgba(0, 0, 0, 0.2);
-  --apple-blue: #007AFF;
-  --apple-gray: #F2F2F7;
-  --apple-dark-gray: #1C1C1E;
-  --apple-light-gray: #8E8E93;
+  --transition: #{$transition-base};
+  --color-primary: #{$color-primary};
+  --color-secondary: #{$color-secondary};
+  --color-accent: #{$color-accent};
 }
 
 // Reset e configurações globais
@@ -21,366 +19,200 @@
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  background-color: var(--apple-gray);
-  color: var(--apple-dark-gray);
+  font-family: $font-family-body;
+  background-color: $color-background;
+  color: $color-text-main;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-// Animações
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+// Tipografia
+h1, h2, h3, h4, h5, h6, .display-font {
+  font-family: $font-family-heading;
+  font-weight: 400; // Bebas Neue so tem um peso geralmente
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: $color-text-main;
 }
 
-@keyframes fadeInDown {
-  from {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes scaleUp {
-  from {
-    opacity: 0;
-    transform: scale(0.9);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-@keyframes slideDown {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-// Classes utilitárias
-.fade-in {
-  animation: fadeIn 0.5s var(--elastic);
-}
-
-.fade-in-down {
-  animation: fadeInDown 0.5s var(--elastic);
-}
-
-.scale-up {
-  animation: scaleUp 0.3s var(--elastic);
-}
-
-.slide-down {
-  animation: slideDown 0.3s var(--elastic);
-}
-
-// Estilo para cards
+// Cards Cereja
 .card {
   border: none;
-  border-radius: 12px;
-  box-shadow: var(--shadow-sm);
-  transition: var(--transition);
-  background: white;
+  border-radius: $border-radius;
+  box-shadow: $shadow-sm;
+  transition: $transition-base;
+  background: $color-white;
   
   &:hover {
-    box-shadow: var(--shadow-md);
+    box-shadow: $shadow-md;
     transform: translateY(-2px);
   }
 }
 
-// Estilo para botões
+// Buttons Cereja
 .btn {
-  border-radius: 8px;
-  font-weight: 500;
-  transition: var(--transition);
+  border-radius: $border-radius-sm;
+  font-family: $font-family-body;
+  font-weight: 600;
+  transition: $transition-base;
   border: none;
-  padding: 0.5rem 1rem;
+  padding: 0.6rem 1.25rem;
   cursor: pointer;
   
   &:hover {
     transform: translateY(-1px);
-    box-shadow: var(--shadow-md);
-  }
-  
-  &.btn-primary {
-    background-color: var(--apple-blue);
-    border-color: var(--apple-blue);
-    color: white;
-    
-    &:hover {
-      background-color: #0056CC;
-      border-color: #0056CC;
-    }
-  }
-  
-  &.btn-outline-primary {
-    border: 1px solid var(--apple-blue);
-    color: var(--apple-blue);
-    background: transparent;
-    
-    &:hover {
-      background-color: var(--apple-blue);
-      color: white;
-    }
-  }
-  
-  &.btn-outline-danger {
-    border: 1px solid #dc3545;
-    color: #dc3545;
-    background: transparent;
-    
-    &:hover {
-      background-color: #dc3545;
-      color: white;
-    }
-  }
-  
-  &.btn-sm {
-    padding: 0.25rem 0.5rem;
-    font-size: 0.875rem;
+    box-shadow: $shadow-sm;
   }
 }
 
-// Estilo para formulários
-.form-control {
-  border-radius: 8px;
-  border: 1px solid #E5E5EA;
-  transition: var(--transition);
-  padding: 0.5rem 0.75rem;
-  width: 100%;
+.btn-primary {
+  background: linear-gradient(135deg, $color-primary 0%, $color-secondary 100%);
+  color: $color-white;
+  
+  &:hover, &:focus, &:active {
+    background: linear-gradient(135deg, darken($color-primary, 5%) 0%, darken($color-secondary, 5%) 100%);
+    color: $color-white;
+  }
+}
+
+.btn-accent {
+  background-color: $color-accent;
+  color: $color-white;
+  
+  &:hover {
+    background-color: darken($color-accent, 10%);
+    color: $color-white;
+  }
+}
+
+.btn-outline-primary {
+  border: 1.5px solid $color-primary;
+  color: $color-primary;
+  background: transparent;
+  
+  &:hover {
+    background: rgba($color-primary, 0.05);
+    color: $color-primary;
+  }
+}
+
+// Forms
+.form-control, .form-select {
+  border-radius: $border-radius-sm;
+  border: 1px solid $color-border;
+  background-color: rgba($color-white, 0.9);
+  padding: 0.75rem 1rem;
+  color: $color-text-main;
+  font-family: $font-family-body;
+  transition: $transition-base;
   
   &:focus {
-    border-color: var(--apple-blue);
-    box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1);
+    border-color: $color-primary;
+    box-shadow: 0 0 0 3px rgba($color-primary, 0.15);
     outline: none;
   }
 }
 
 .form-label {
-  display: block;
-  margin-bottom: 0.5rem;
+  font-family: $font-family-body;
   font-weight: 600;
-  color: var(--apple-dark-gray);
+  color: $color-text-muted;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
 }
 
-// Estilo para modais
-.modal-content {
-  border: none;
-  border-radius: 12px;
-  box-shadow: var(--shadow-lg);
-}
-
-// Estilo para tabelas
+// Tabelas modernas
 .table {
-  border-radius: 8px;
+  border-radius: $border-radius-sm;
   overflow: hidden;
-  width: 100%;
-  border-collapse: collapse;
+  background: $color-white;
+  border-collapse: separate;
+  border-spacing: 0;
   
-  th {
-    background-color: var(--apple-gray);
-    border: none;
-    font-weight: 600;
-    color: var(--apple-dark-gray);
-    padding: 1rem;
-    text-align: left;
+  thead {
+    th {
+      background-color: $color-gray-100;
+      color: $color-text-muted;
+      font-family: $font-family-body;
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 0.8rem;
+      letter-spacing: 0.05em;
+      border: none;
+      padding: 1rem;
+    }
   }
   
-  td {
-    border: none;
-    border-bottom: 1px solid #E5E5EA;
-    padding: 1rem;
-  }
-  
-  tbody tr:hover {
-    background-color: rgba(0, 122, 255, 0.05);
-  }
-}
-
-.table-responsive {
-  overflow-x: auto;
-}
-
-// Estilo para navbar
-.navbar {
-  background: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(20px);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-  box-shadow: var(--shadow-sm);
-  padding: 1rem 0;
-}
-
-.navbar-brand {
-  font-weight: 700;
-  font-size: 1.5rem;
-  color: var(--apple-dark-gray);
-  text-decoration: none;
-}
-
-.nav-link {
-  color: var(--apple-dark-gray);
-  text-decoration: none;
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
-  transition: var(--transition);
-  
-  &:hover {
-    background-color: rgba(0, 122, 255, 0.1);
-    color: var(--apple-blue);
-  }
-  
-  &.active {
-    background-color: var(--apple-blue);
-    color: white;
+  tbody {
+    tr {
+      transition: $transition-base;
+      
+      &:hover {
+        background-color: rgba($color-primary, 0.02);
+      }
+      
+      td {
+        border-bottom: 1px solid $color-border;
+        padding: 1rem;
+        vertical-align: middle;
+        color: $color-text-main;
+      }
+    }
+    
+    tr:last-child td {
+      border-bottom: none;
+    }
   }
 }
 
-.navbar-nav {
-  display: flex;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.nav-item {
-  margin: 0 0.25rem;
-}
-
-// Estilo para loading
-.loading {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 200px;
-}
-
-.spinner-border {
-  width: 2rem;
-  height: 2rem;
-  border: 0.25rem solid #f3f3f3;
-  border-top: 0.25rem solid var(--apple-blue);
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-// Estilo para badges
+// Badges
 .badge {
+  padding: 0.4rem 0.8rem;
+  border-radius: 20px;
+  font-weight: 600;
   font-size: 0.75rem;
-  padding: 0.375rem 0.75rem;
-  border-radius: 6px;
-  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
   
   &.bg-success {
-    background-color: #28a745 !important;
-    color: white;
+    background-color: rgba($status-success, 0.1) !important;
+    color: darken($status-success, 10%) !important;
   }
   
-  &.bg-secondary {
-    background-color: #6c757d !important;
-    color: white;
-  }
-}
-
-// Estilo para dropdown
-.dropdown-menu {
-  background: white;
-  border: none;
-  border-radius: 8px;
-  box-shadow: var(--shadow-md);
-  padding: 0.5rem 0;
-}
-
-.dropdown-item {
-  padding: 0.5rem 1rem;
-  color: var(--apple-dark-gray);
-  text-decoration: none;
-  transition: var(--transition);
-  
-  &:hover {
-    background-color: rgba(0, 122, 255, 0.1);
-    color: var(--apple-blue);
-  }
-}
-
-.dropdown-divider {
-  border-top: 1px solid #E5E5EA;
-  margin: 0.5rem 0;
-}
-
-// Estilo para botões de grupo
-.btn-group {
-  display: flex;
-  gap: 0.25rem;
-}
-
-// Estilo para texto
-.text-muted {
-  color: var(--apple-light-gray);
-}
-
-// Estilo para container
-.container-fluid {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 1rem;
-}
-
-// Estilo para row e col
-.row {
-  display: flex;
-  flex-wrap: wrap;
-  margin: 0 -0.5rem;
-}
-
-.col-md-4 {
-  flex: 0 0 33.333333%;
-  max-width: 33.333333%;
-  padding: 0 0.5rem;
-}
-
-// Responsividade
-@media (max-width: 768px) {
-  .col-md-4 {
-    flex: 0 0 100%;
-    max-width: 100%;
-    margin-bottom: 1rem;
+  &.bg-warning {
+    background-color: rgba($status-warning, 0.15) !important;
+    color: darken($status-warning, 15%) !important;
   }
   
-  .navbar-nav {
-    flex-direction: column;
+  &.bg-danger {
+    background-color: rgba($status-danger, 0.1) !important;
+    color: $status-danger !important;
   }
   
-  .table-responsive {
-    font-size: 0.9rem;
-  }
-  
-  .btn-group {
-    flex-direction: column;
+  &.bg-primary {
+    background-color: rgba($color-primary, 0.1) !important;
+    color: $color-primary !important;
   }
 }
 
-.mb-3 {
-  margin-bottom: 1.5rem;
+// SweetAlert2 Customs
+div:where(.swal2-container) div:where(.swal2-popup) {
+  border-radius: $border-radius !important;
+  font-family: $font-family-body !important;
 }
+
+div:where(.swal2-container) button:where(.swal2-styled).swal2-confirm {
+  background: linear-gradient(135deg, $color-primary 0%, $color-secondary 100%) !important;
+  border-radius: $border-radius-sm !important;
+}
+
+// Utils
+.text-primary { color: $color-primary !important; }
+.text-accent { color: $color-accent !important; }
+.bg-primary { background-color: $color-primary !important; }
+.text-muted { color: $color-text-muted !important; }
+
+// Animacoes mantidas e polidas
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+.fade-in { animation: fadeIn 0.4s ease-out forwards; }

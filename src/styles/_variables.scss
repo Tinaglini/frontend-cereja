@@ -1,0 +1,37 @@
+// ==========================================
+// CEREJA FESTAS - DESIGN SYSTEM VARIABLES
+// ==========================================
+
+// --- Colors ---
+$color-primary: #db2777; // Cereja/Vinho principal
+$color-secondary: #f472b6; // Cereja claro
+$color-accent: #ca8a04; // Dourado celebrativo
+$color-background: #fdf2f8; // Fundo suave (Light pink)
+$color-text-main: #2b0413; // Texto muito escuro (Vinho quase preto) para contraste ideal
+$color-text-muted: #831843; // Texto secundário (Vinho)
+
+// --- Apple/Neutral Fallbacks (Substituídos por tons quentes) ---
+$color-gray-100: #fce7f3;
+$color-gray-200: #fbcfe8;
+$color-gray-500: #9d174d;
+$color-white: #ffffff;
+$color-border: #fbcfe8;
+
+// --- Status Colors ---
+$status-success: #16a34a; // Verde (Aprovado)
+$status-warning: #ca8a04; // Amarelo/Dourado (Pendente)
+$status-danger: #e11d48; // Vermelho (Rejeitado)
+
+// --- Typography ---
+$font-family-heading: 'Bebas Neue', sans-serif;
+$font-family-body: 'Source Sans 3', sans-serif;
+
+// --- Shadows ---
+$shadow-sm: 0 2px 4px rgba(219, 39, 119, 0.05);
+$shadow-md: 0 4px 6px -1px rgba(219, 39, 119, 0.1), 0 2px 4px -1px rgba(219, 39, 119, 0.06);
+$shadow-lg: 0 10px 15px -3px rgba(219, 39, 119, 0.1), 0 4px 6px -2px rgba(219, 39, 119, 0.05);
+
+// --- General UI ---
+$border-radius: 16px;
+$border-radius-sm: 8px;
+$transition-base: all 0.25s ease-in-out;
