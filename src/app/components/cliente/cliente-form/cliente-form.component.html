@@ -1,0 +1,84 @@
+<div class="cliente-form-container fade-in">
+  <div class="page-header">
+    <h1 class="page-title">
+      <i class="fas fa-user-plus me-3"></i>
+      {{ isEditando ? 'Editar Cliente' : 'Novo Cliente' }}
+    </h1>
+  </div>
+
+  <div class="form-card">
+    <form (ngSubmit)="salvar()" #clienteForm="ngForm">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label class="form-label">Nome *</label>
+            <input 
+              type="text" 
+              class="form-control" 
+              [(ngModel)]="cliente.nome" 
+              name="nome"
+              required
+              placeholder="Digite o nome do cliente">
+          </div>
+        </div>
+        
+        <div class="col-md-6">
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <input 
+              type="email" 
+              class="form-control" 
+              [(ngModel)]="cliente.email" 
+              name="email"
+              placeholder="Digite o email (opcional)">
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label class="form-label">Telefone *</label>
+            <input 
+              type="text" 
+              class="form-control" 
+              [(ngModel)]="cliente.telefone" 
+              name="telefone"
+              required
+              placeholder="Digite o telefone">
+          </div>
+        </div>
+        
+        <div class="col-md-6">
+          <div class="form-group">
+            <label class="form-label">Status do Cadastro</label>
+            <select class="form-control" [(ngModel)]="cliente.statusCadastro" name="statusCadastro">
+              <option value="COMPLETO">Completo</option>
+              <option value="INCOMPLETO">Incompleto</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn btn-outline-secondary" (click)="cancelar()">
+          <i class="fas fa-times me-2"></i>
+          Cancelar
+        </button>
+        <button 
+          type="submit" 
+          class="btn btn-primary"
+          [disabled]="clienteForm.invalid || loading">
+          <span *ngIf="!loading">
+            <i class="fas fa-save me-2"></i>
+            {{ isEditando ? 'Atualizar' : 'Salvar' }}
+          </span>
+          <span *ngIf="loading">
+            <i class="fas fa-spinner fa-spin me-2"></i>
+            Salvando...
+          </span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

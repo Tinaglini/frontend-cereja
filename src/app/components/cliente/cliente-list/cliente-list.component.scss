@@ -1,0 +1,120 @@
+.cliente-list-container {
+  padding: 2rem 0;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.header-content {
+  flex: 1;
+}
+
+.page-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--apple-dark-gray);
+  margin-bottom: 0.5rem;
+}
+
+.page-subtitle {
+  color: var(--apple-light-gray);
+  margin: 0;
+}
+
+.filters-card {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 2rem;
+}
+
+.table-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+.cliente-info {
+  strong {
+    display: block;
+    margin-bottom: 0.25rem;
+  }
+  
+  small {
+    font-size: 0.8rem;
+  }
+}
+
+.empty-state {
+  text-align: center;
+  padding: 3rem 2rem;
+  
+  h4 {
+    color: var(--apple-dark-gray);
+    margin-bottom: 0.5rem;
+  }
+  
+  p {
+    margin-bottom: 1.5rem;
+  }
+}
+
+.btn-group {
+  .btn {
+    margin: 0 2px;
+  }
+}
+
+.badge {
+  font-size: 0.75rem;
+  padding: 0.375rem 0.75rem;
+  border-radius: 6px;
+  
+  &.bg-success {
+    background-color: #28a745 !important;
+  }
+  
+  &.bg-secondary {
+    background-color: #6c757d !important;
+  }
+}
+
+// Responsividade
+@media (max-width: 768px) {
+  .page-header {
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
+  }
+  
+  .filters-card {
+    .row {
+      flex-direction: column;
+    }
+    
+    .col-md-4 {
+      margin-bottom: 1rem;
+    }
+  }
+  
+  .table-responsive {
+    font-size: 0.9rem;
+  }
+  
+  .btn-group {
+    flex-direction: column;
+    
+    .btn {
+      margin: 1px 0;
+    }
+  }
+}
+

@@ -1,0 +1,88 @@
+<div class="endereco-list-container fade-in">
+  <div class="endereco-list-header">
+    <h1 class="endereco-list-title">
+      <i class="fas fa-map-marker-alt me-3"></i>
+      Endereços
+    </h1>
+    <p class="endereco-list-subtitle">Gerencie os endereços cadastrados</p>
+  </div>
+
+  <div class="endereco-list-actions">
+    <div class="search-container">
+      <div class="input-group">
+        <span class="input-group-text">
+          <i class="fas fa-search"></i>
+        </span>
+        <input 
+          type="text" 
+          class="form-control" 
+          placeholder="Buscar por rua, cidade ou bairro..."
+          [(ngModel)]="termoBusca"
+          (input)="filtrarEnderecos()"
+        >
+      </div>
+    </div>
+    
+    <a routerLink="/enderecos/novo" class="btn btn-primary">
+      <i class="fas fa-plus me-2"></i>
+      Novo Endereço
+    </a>
+  </div>
+
+  <div class="endereco-list-content">
+    <div *ngIf="loading" class="loading-container">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Carregando...</span>
+      </div>
+      <p class="mt-3">Carregando endereços...</p>
+    </div>
+
+    <div *ngIf="!loading && enderecosFiltrados.length === 0" class="empty-state">
+      <i class="fas fa-map-marker-alt empty-icon"></i>
+      <h3>Nenhum endereço encontrado</h3>
+      <p *ngIf="termoBusca">Nenhum endereço corresponde aos critérios de busca.</p>
+      <p *ngIf="!termoBusca" class="mb-3">Comece adicionando seu primeiro endereço.</p>
+      <a *ngIf="!termoBusca" routerLink="/enderecos/novo" class="btn btn-primary">
+        <i class="fas fa-plus me-2"></i>
+        Adicionar Endereço
+      </a>
+    </div>
+
+    <div *ngIf="!loading && enderecosFiltrados.length > 0" class="endereco-grid">
+      <div *ngFor="let endereco of enderecosFiltrados" class="endereco-card">
+        <div class="endereco-card-header">
+          <h5 class="endereco-card-title">
+            <i class="fas fa-map-marker-alt me-2"></i>
+            {{ endereco.rua }}, {{ endereco.numero }}
+          </h5>
+          <div class="endereco-card-actions">
+            <a [routerLink]="['/enderecos/editar', endereco.id]" class="btn btn-sm btn-outline-primary">
+              <i class="fas fa-edit"></i>
+            </a>
+            <button 
+              class="btn btn-sm btn-outline-danger ms-2"
+              (click)="excluirEndereco(endereco.id!)"
+            >
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
+        </div>
+        
+        <div class="endereco-card-body">
+          <p class="endereco-card-address">{{ formatarEndereco(endereco) }}</p>
+          
+          <div class="endereco-card-details">
+            <span class="badge bg-secondary me-2">
+              <i class="fas fa-city me-1"></i>
+              {{ endereco.cidade }}
+            </span>
+            <span class="badge bg-info">
+              <i class="fas fa-flag me-1"></i>
+              {{ endereco.estado }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

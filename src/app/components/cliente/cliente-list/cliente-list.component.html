@@ -1,0 +1,110 @@
+<div class="cliente-list-container fade-in">
+  <div class="page-header">
+    <div class="header-content">
+      <h1 class="page-title">
+        <i class="fas fa-users me-3"></i>
+        Clientes
+      </h1>
+      <p class="page-subtitle">Gerencie seus clientes e informações de contato</p>
+    </div>
+    <button class="btn btn-primary" (click)="novoCliente()">
+      <i class="fas fa-plus me-2"></i>
+      Novo Cliente
+    </button>
+  </div>
+
+  <!-- Filtros -->
+  <div class="filters-card">
+    <div class="row">
+      <div class="col-md-4">
+        <label class="form-label">Buscar por nome:</label>
+        <input 
+          type="text" 
+          class="form-control" 
+          [(ngModel)]="filtroNome" 
+          (input)="aplicarFiltros()"
+          placeholder="Digite o nome do cliente">
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Buscar por telefone:</label>
+        <input 
+          type="text" 
+          class="form-control" 
+          [(ngModel)]="filtroTelefone" 
+          (input)="aplicarFiltros()"
+          placeholder="Digite o telefone">
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Status do Cadastro:</label>
+        <select class="form-control" [(ngModel)]="filtroStatus" (change)="aplicarFiltros()">
+          <option value="">Todos</option>
+          <option value="COMPLETO">Completo</option>
+          <option value="INCOMPLETO">Incompleto</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabela de clientes -->
+  <div class="table-card">
+    <div class="loading" *ngIf="loading">
+      <div class="spinner-border" role="status">
+        <span class="visually-hidden">Carregando...</span>
+      </div>
+    </div>
+
+    <div class="table-responsive" *ngIf="!loading">
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>Email</th>
+            <th>Telefone</th>
+            <th>Status</th>
+            <th>Data Cadastro</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let cliente of clientes; trackBy: trackByCliente">
+            <td>
+              <div class="cliente-info">
+                <strong>{{ cliente.nome }}</strong>
+                <small class="text-muted d-block" *ngIf="cliente.cpf">CPF: {{ cliente.cpf }}</small>
+                <small class="text-muted d-block" *ngIf="cliente.cnpj">CNPJ: {{ cliente.cnpj }}</small>
+              </div>
+            </td>
+            <td>{{ cliente.email }}</td>
+            <td>{{ cliente.telefone }}</td>
+            <td>
+              <span class="badge" [class]="cliente.statusCadastro === 'COMPLETO' ? 'bg-success' : 'bg-warning'">
+                {{ cliente.statusCadastro === 'COMPLETO' ? 'Completo' : 'Incompleto' }}
+              </span>
+            </td>
+            <td>{{ cliente.dataCadastro | date:'dd/MM/yyyy' }}</td>
+            <td>
+              <div class="btn-group" role="group">
+                <button class="btn btn-sm btn-outline-primary" (click)="editarCliente(cliente)">
+                  <i class="fas fa-edit"></i>
+                </button>
+                <button class="btn btn-sm btn-outline-danger" (click)="excluirCliente(cliente)">
+                  <i class="fas fa-trash"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="empty-state" *ngIf="clientes.length === 0">
+        <i class="fas fa-users fa-3x text-muted mb-3"></i>
+        <h4>Nenhum cliente encontrado</h4>
+        <p class="text-muted">Comece adicionando seu primeiro cliente.</p>
+        <button class="btn btn-primary" (click)="novoCliente()">
+          <i class="fas fa-plus me-2"></i>
+          Adicionar Cliente
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
