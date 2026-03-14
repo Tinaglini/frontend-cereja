@@ -1,34 +1,23 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule, Router } from '@angular/router';
+import { RouterModule } from '@angular/router';
+import { NavbarComponent } from '../../shared/navbar/navbar.component';
+import { ToastComponent } from '../../shared/toast/toast.component';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-customer-layout',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, NavbarComponent, ToastComponent],
   templateUrl: './customer-layout.component.html',
   styleUrl: './customer-layout.component.scss'
 })
 export class CustomerLayoutComponent {
-  userEmail: string = '';
-  userName: string = '';
-  isMenuOpen = false;
+  isSidebarCollapsed = false;
 
-  constructor(private authService: AuthService, private router: Router) {
-    const user = this.authService.getCurrentUserValue();
-    if (user) {
-      this.userEmail = user.email;
-      this.userName = user.nome || user.email.split('@')[0];
-    }
-  }
+  constructor(public authService: AuthService) {}
 
-  toggleMenu() {
-    this.isMenuOpen = !this.isMenuOpen;
-  }
-
-  logout() {
-    this.authService.logout();
-    this.router.navigate(['/login']);
+  toggleSidebar() {
+    this.isSidebarCollapsed = !this.isSidebarCollapsed;
   }
 }
