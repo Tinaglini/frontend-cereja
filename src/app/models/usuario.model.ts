@@ -12,8 +12,9 @@ export interface LoginRequest {
 }
 
 export interface LoginResponse {
+  tokenJWT?: string;
   token?: string;
-  usuario: Usuario;
+  usuario?: Usuario;
   message?: string;
 }
 

@@ -4,7 +4,6 @@ import { Observable, BehaviorSubject } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { LoginRequest, LoginResponse, Usuario } from '../models/usuario.model';
 import { environment } from '../../environments/environment';
-import { jwtDecode } from 'jwt-decode';
 
 @Injectable({
   providedIn: 'root'
@@ -21,26 +20,30 @@ export class AuthService {
 
   constructor(private http: HttpClient) {}
 
-  login(credentials: LoginRequest): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(this.loginUrl, credentials).pipe(
+  login(credentials: LoginRequest): Observable<any> {
+    return this.http.post<any>(this.loginUrl, credentials).pipe(
       tap(response => {
-        if (response && response.token) {
-          localStorage.setItem('token', response.token);
-          // Armazenar dados do usuário
-          if (response.usuario) {
-            localStorage.setItem('user', JSON.stringify(response.usuario));
-            this.currentUser.next(response.usuario);
-          } else {
-            // Fallback: criar dados básicos do usuário se não vierem do backend
-            const fallbackUser: Usuario = {
-              id: 1,
-              email: credentials.login,
-              nome: credentials.login.split('@')[0] // Usar parte antes do @ como nome
-            };
-            localStorage.setItem('user', JSON.stringify(fallbackUser));
-            this.currentUser.next(fallbackUser);
-            console.log('Usando dados de fallback:', fallbackUser);
+        const token = response.tokenJWT || response.token;
+        if (token) {
+          localStorage.setItem('token', token);
+          
+          let role = null;
+          try {
+            const payload = JSON.parse(atob(token.split('.')[1]));
+            role = payload.role || payload.roles || payload.authorities || payload.scope || '';
+            if (Array.isArray(role)) role = role[0];
+          } catch (e) {
+            console.error('Erro ao decodificar token payload no login', e);
           }
+          
+          const usuario: Usuario = response.usuario || {
+            email: credentials.login,
+            nome: credentials.login.split('@')[0],
+            role: role
+          };
+
+          localStorage.setItem('user', JSON.stringify(usuario));
+          this.currentUser.next(usuario);
           this.loggedIn.next(true); // Avisa que o login foi feito com sucesso
         }
       })
@@ -78,11 +81,11 @@ export class AuthService {
     const token = this.getToken();
     if (!token) return null;
     try {
-      const decodedToken: any = jwtDecode(token);
+      const payload = JSON.parse(atob(token.split('.')[1]));
       // spring boot JWT costuma colocar as roles em um claim de array ou comma-separated string
       // Vamos tentar algumas convenções comuns, dependendo de como o backend gerou
       // Se houver múltiplas, pegaremos a de maior privilégio 
-      const authClaim = decodedToken.roles || decodedToken.authorities || decodedToken.scope || '';
+      const authClaim = payload.roles || payload.authorities || payload.role || payload.scope || '';
       
       if (Array.isArray(authClaim)) {
         if (authClaim.includes('ROLE_ADMIN')) return 'ROLE_ADMIN';
