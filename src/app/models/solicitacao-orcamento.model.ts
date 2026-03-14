@@ -11,6 +11,16 @@ export interface SolicitacaoOrcamento {
   dataSolicitacao?: Date;
 }
 
+export interface SolicitacaoOrcamentoRequest {
+  clienteId: number;
+  tipoEventoId: number;
+  temaFestaId?: number;
+  dataEvento: Date | string;
+  numeroConvidados: number;
+  observacoes?: string;
+  status?: string;
+}
+
 export interface Cliente {
   id?: number;
   nome: string;

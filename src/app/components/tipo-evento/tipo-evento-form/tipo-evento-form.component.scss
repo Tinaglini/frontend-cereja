@@ -1,12 +1,11 @@
 @import '../../../../styles/variables';
 
-.endereco-form-container {
+.tipo-evento-form-container {
   max-width: 1400px;
   margin: 0 auto;
 }
 
 .bg-primary-soft { background-color: rgba($color-primary, 0.05); }
-.bg-secondary-soft { background-color: rgba($color-secondary, 0.1); }
 
 // Estilos Flutuantes Específicos
 .form-floating {
@@ -18,6 +17,17 @@
     &:focus {
       background-color: $color-white;
     }
+  }
+}
+
+// Switch Button Boostrap nativo customização
+.form-switch .form-check-input {
+  width: 2.5em;
+  margin-left: -2.5em;
+  
+  &:checked {
+    background-color: $status-success;
+    border-color: $status-success;
   }
 }
 

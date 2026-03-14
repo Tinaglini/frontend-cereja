@@ -1,0 +1,181 @@
+<div class="solicitacao-form-container fade-in">
+  <!-- Header -->
+  <div class="page-header d-flex justify-content-between align-items-center mb-4">
+    <div class="header-content">
+      <h1 class="display-font text-dark mb-1">
+        <i class="fas fa-file-signature text-primary me-3"></i>
+        {{ isEdit ? 'Editar Solicitação' : 'Nova Solicitação' }}
+      </h1>
+      <p class="text-muted mb-0">{{ isEdit ? 'Altere os dados deste orçamento.' : 'Abra um novo pedido para um cliente.' }}</p>
+    </div>
+    <button class="btn btn-outline-secondary shadow-sm" (click)="cancelar()">
+      <i class="fas fa-arrow-left me-2"></i> Voltar
+    </button>
+  </div>
+
+  <div class="row">
+    <div class="col-lg-8">
+      <div class="card border-0 shadow-sm mt-2">
+        <div class="card-body p-4 p-md-5">
+          <form (ngSubmit)="salvar()" #solForm="ngForm">
+            
+            <h5 class="fw-bold text-dark mb-4 pb-2 border-bottom">Informações Principais</h5>
+            
+            <div class="row g-4 mb-4">
+              <div class="col-md-6">
+                <div class="form-floating">
+                  <select
+                    id="clienteId"
+                    class="form-select"
+                    [(ngModel)]="solicitacaoReq.clienteId"
+                    name="clienteId"
+                    required>
+                    <option [value]="0" disabled selected>Selecione um cliente...</option>
+                    <option *ngFor="let c of clientes" [value]="c.id">{{ c.nome }} ({{ c.telefone }})</option>
+                  </select>
+                  <label for="clienteId">Cliente *</label>
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <div class="form-floating">
+                  <input
+                    type="date"
+                    id="dataEvento"
+                    class="form-control"
+                    [(ngModel)]="solicitacaoReq.dataEvento"
+                    name="dataEvento"
+                    required>
+                  <label for="dataEvento">Data do Evento *</label>
+                </div>
+              </div>
+            </div>
+
+            <h5 class="fw-bold text-dark mb-4 pb-2 border-bottom mt-5">Detalhes da Festa</h5>
+
+            <div class="row g-4 mb-4">
+              <div class="col-md-6">
+                <div class="form-floating">
+                  <select
+                    id="tipoEventoId"
+                    class="form-select"
+                    [(ngModel)]="solicitacaoReq.tipoEventoId"
+                    name="tipoEventoId"
+                    required>
+                    <option [value]="0" disabled selected>Tipo de Evento...</option>
+                    <option *ngFor="let te of tiposEvento" [value]="te.id">{{ te.nome }}</option>
+                  </select>
+                  <label for="tipoEventoId">Tipo de Evento *</label>
+                </div>
+              </div>
+              
+              <div class="col-md-6">
+                <div class="form-floating">
+                  <select
+                    id="temaFestaId"
+                    class="form-select"
+                    [(ngModel)]="solicitacaoReq.temaFestaId"
+                    name="temaFestaId">
+                    <option [value]="undefined">Múltiplos / Personalizado / Nenhum</option>
+                    <option *ngFor="let t of temas" [value]="t.id">{{ t.nome }}</option>
+                  </select>
+                  <label for="temaFestaId">Tema Principal (Opcional)</label>
+                </div>
+              </div>
+
+              <div class="col-md-4">
+                <div class="form-floating">
+                  <input
+                    type="number"
+                    id="numeroConvidados"
+                    class="form-control"
+                    [(ngModel)]="solicitacaoReq.numeroConvidados"
+                    name="numeroConvidados"
+                    placeholder="50"
+                    min="1"
+                    required>
+                  <label for="numeroConvidados">Qtd. Convidados *</label>
+                </div>
+              </div>
+
+              <div class="col-md-4" *ngIf="isEdit">
+                <div class="form-floating">
+                  <select
+                    id="status"
+                    class="form-select"
+                    [(ngModel)]="solicitacaoReq.status"
+                    name="status"
+                    required>
+                    <option value="PENDENTE">Pendente</option>
+                    <option value="APROVADO">Aprovado</option>
+                    <option value="REJEITADO">Rejeitado</option>
+                    <option value="CANCELADO">Cancelado</option>
+                  </select>
+                  <label for="status">Status</label>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-floating mb-4">
+              <textarea
+                id="observacoes"
+                class="form-control"
+                [(ngModel)]="solicitacaoReq.observacoes"
+                name="observacoes"
+                placeholder="Observações do cliente..."
+                style="height: 120px"></textarea>
+              <label for="observacoes">Observações (Alergias, preferências, etc.)</label>
+            </div>
+
+            <!-- Botões de Ação -->
+            <div class="form-actions mt-5 pt-4 border-top d-flex justify-content-end gap-3">
+              <button type="button" class="btn btn-outline-secondary px-4" (click)="cancelar()" [disabled]="loading">
+                Cancelar
+              </button>
+              <button 
+                type="submit" 
+                class="btn btn-primary px-5"
+                [disabled]="solForm.invalid || solicitacaoReq.clienteId === 0 || solicitacaoReq.tipoEventoId === 0 || loading">
+                <span *ngIf="!loading">
+                  <i class="fas fa-save me-2"></i> {{ isEdit ? 'Salvar Alterações' : 'Criar Solicitação' }}
+                </span>
+                <span *ngIf="loading">
+                  <i class="fas fa-spinner fa-spin me-2"></i> Salvando...
+                </span>
+              </button>
+            </div>
+
+          </form>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Painel Lateral / Dicas -->
+    <div class="col-lg-4 d-none d-lg-block mt-2">
+      <div class="card border-0 bg-primary-soft shadow-none h-100 round-4">
+        <div class="card-body p-4 text-center">
+            
+          <i class="fas fa-calculator text-accent fa-3x mb-4 opacity-75 mt-4"></i>
+          <h5 class="fw-bold text-dark">Lembre-se</h5>
+          
+          <p class="text-muted small mt-3 px-3">
+            O valor final do orçamento é definido apenas <strong class="text-dark">após</strong> a aprovação da solicitação e fechamento dos pacotes adicionais.
+          </p>
+
+          <hr class="my-4 border-primary opacity-25 mx-4">
+          
+          <div class="text-start px-3">
+             <div class="d-flex mb-3">
+                 <i class="fas fa-check-circle text-success mt-1 me-2"></i>
+                 <small class="text-muted">A quantidade de convidados impacta as locações sugeridas.</small>
+             </div>
+             <div class="d-flex">
+                 <i class="fas fa-check-circle text-success mt-1 me-2"></i>
+                 <small class="text-muted">Verifique a disponibilidade dos temas escolhidos na data reservada.</small>
+             </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

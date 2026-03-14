@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { TemaFestaService } from '../../../services/tema-festa.service';
 import { NotificationService } from '../../../services/notification.service';
@@ -20,13 +20,19 @@ export class TemaListComponent implements OnInit {
   filtroStatus: 'todos' | 'ativo' | 'inativo' = 'todos';
   ordenacao: 'nome' | 'preco' | 'data' = 'nome';
   loading = false;
+  isReadOnly = false;
 
   constructor(
     private temaService: TemaFestaService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private route: ActivatedRoute
   ) { }
 
   ngOnInit() {
+    this.route.data.subscribe(data => {
+      this.isReadOnly = !!data['isReadOnlyRole'];
+    });
+
     this.carregarTemas();
   }
 

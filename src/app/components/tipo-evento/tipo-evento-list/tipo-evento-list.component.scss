@@ -1,11 +1,12 @@
 @import '../../../../styles/variables';
 
-.cliente-list-container {
+.tipo-evento-list-container {
   max-width: 1400px;
   margin: 0 auto;
 }
 
 .bg-primary-soft { background-color: rgba($color-primary, 0.1); }
+.bg-secondary-soft { background-color: rgba($color-secondary, 0.15); }
 
 .avatar-circle {
   width: 40px;
@@ -27,8 +28,13 @@
   border-radius: $border-radius-sm;
 }
 
-// Estilo específico para o campo select flutuante
-.form-floating > .form-select {
-  padding-top: 1.625rem;
-  padding-bottom: 0.625rem;
+.form-floating {
+  > .form-control, > .form-select {
+    border: 1px solid rgba($color-border, 0.8);
+    background-color: $color-gray-100;
+    
+    &:focus {
+      background-color: $color-white;
+    }
+  }
 }

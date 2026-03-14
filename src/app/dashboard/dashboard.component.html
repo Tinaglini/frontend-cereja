@@ -1,80 +1,126 @@
 <div class="dashboard-container fade-in">
-  <div class="dashboard-header">
-    <h1 class="dashboard-title">
-      <i class="fas fa-tachometer-alt me-3"></i>
-      Dashboard
-    </h1>
-    <p class="dashboard-subtitle">Visão geral do sistema de gestão de festas</p>
+  <div class="dashboard-header mb-5">
+    <h1 class="display-font text-primary mb-2">Visão Geral</h1>
+    <p class="text-muted">Acompanhe as estatísticas e gerencie seu sistema de festas.</p>
   </div>
 
-  <div class="stats-grid">
-    <div class="stat-card">
-      <div class="stat-icon">
-        <i class="fas fa-users"></i>
-      </div>
-      <div class="stat-content">
-        <h3 class="stat-number">{{ stats.clientes }}</h3>
-        <p class="stat-label">Clientes</p>
-      </div>
-    </div>
-
-    <div class="stat-card">
-      <div class="stat-icon">
-        <i class="fas fa-file-invoice"></i>
-      </div>
-      <div class="stat-content">
-        <h3 class="stat-number">{{ stats.solicitacoes }}</h3>
-        <p class="stat-label">Solicitações</p>
+  <div class="row g-4 mb-5">
+    <!-- Card Clientes -->
+    <div class="col-12 col-md-6 col-xl-3">
+      <div class="card stat-card h-100">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h6 class="stat-label text-muted mb-0">Clientes</h6>
+            <div class="stat-icon-wrapper bg-primary-soft">
+              <i class="fas fa-users text-primary"></i>
+            </div>
+          </div>
+          <h2 class="stat-number text-dark fw-bold mb-0">{{ stats.clientes }}</h2>
+          <small class="text-success"><i class="fas fa-arrow-up me-1"></i>Ativos no sistema</small>
+        </div>
       </div>
     </div>
 
-    <div class="stat-card">
-      <div class="stat-icon">
-        <i class="fas fa-palette"></i>
-      </div>
-      <div class="stat-content">
-        <h3 class="stat-number">{{ stats.temas }}</h3>
-        <p class="stat-label">Temas</p>
+    <!-- Card Solicitações -->
+    <div class="col-12 col-md-6 col-xl-3">
+      <div class="card stat-card h-100">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h6 class="stat-label text-muted mb-0">Solicitações</h6>
+            <div class="stat-icon-wrapper bg-accent-soft">
+              <i class="fas fa-file-invoice-dollar text-accent"></i>
+            </div>
+          </div>
+          <h2 class="stat-number text-dark fw-bold mb-0">{{ stats.solicitacoes }}</h2>
+          <small class="text-muted"><i class="fas fa-clock me-1"></i>Orçamentos pendentes</small>
+        </div>
       </div>
     </div>
 
-    <div class="stat-card">
-      <div class="stat-icon">
-        <i class="fas fa-calendar-alt"></i>
+    <!-- Card Temas -->
+    <div class="col-12 col-md-6 col-xl-3">
+      <div class="card stat-card h-100">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h6 class="stat-label text-muted mb-0">Temas</h6>
+            <div class="stat-icon-wrapper bg-secondary-soft">
+              <i class="fas fa-palette text-secondary"></i>
+            </div>
+          </div>
+          <h2 class="stat-number text-dark fw-bold mb-0">{{ stats.temas }}</h2>
+          <small class="text-muted"><i class="fas fa-check-circle me-1"></i>Temas disponíveis</small>
+        </div>
       </div>
-      <div class="stat-content">
-        <h3 class="stat-number">{{ stats.tiposEvento }}</h3>
-        <p class="stat-label">Tipos de Evento</p>
+    </div>
+
+    <!-- Card Tipos de Evento -->
+    <div class="col-12 col-md-6 col-xl-3">
+      <div class="card stat-card h-100">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h6 class="stat-label text-muted mb-0">Tipos de Evento</h6>
+            <div class="stat-icon-wrapper bg-dark-soft">
+              <i class="fas fa-glass-cheers text-dark"></i>
+            </div>
+          </div>
+          <h2 class="stat-number text-dark fw-bold mb-0">{{ stats.tiposEvento }}</h2>
+          <small class="text-muted"><i class="fas fa-list me-1"></i>Categorias ativas</small>
+        </div>
       </div>
     </div>
   </div>
 
-  <div class="quick-actions">
-    <h2 class="section-title">
-      <i class="fas fa-bolt me-2"></i>
-      Ações Rápidas
-    </h2>
+  <div class="quick-actions-section">
+    <h3 class="display-font text-dark mb-4 h4">Ações Rápidas</h3>
     
-    <div class="actions-grid">
-      <a routerLink="/clientes" class="action-card">
-        <i class="fas fa-user-plus"></i>
-        <span>Novo Cliente</span>
-      </a>
+    <div class="row g-4">
+      <!-- Ação Novo Cliente -->
+      <div class="col-6 col-md-3">
+        <a routerLink="/clientes" class="action-card card h-100 text-decoration-none">
+          <div class="card-body text-center d-flex flex-column align-items-center justify-content-center py-4">
+            <div class="action-icon mb-3 text-primary">
+              <i class="fas fa-user-plus"></i>
+            </div>
+            <span class="action-text text-dark fw-medium">Novo Cliente</span>
+          </div>
+        </a>
+      </div>
       
-      <a href="#" class="action-card" (click)="showComingSoon('Solicitações')">
-        <i class="fas fa-file-plus"></i>
-        <span>Nova Solicitação</span>
-      </a>
+      <!-- Ação Nova Solicitação -->
+      <div class="col-6 col-md-3">
+        <a href="#" class="action-card card h-100 text-decoration-none" (click)="showComingSoon('Solicitações'); $event.preventDefault()">
+          <div class="card-body text-center d-flex flex-column align-items-center justify-content-center py-4">
+            <div class="action-icon mb-3 text-accent">
+              <i class="fas fa-file-invoice"></i>
+            </div>
+            <span class="action-text text-dark fw-medium">Novo Orçamento</span>
+          </div>
+        </a>
+      </div>
       
-      <a routerLink="/temas" class="action-card">
-        <i class="fas fa-palette"></i>
-        <span>Gerenciar Temas</span>
-      </a>
+      <!-- Ação Gerenciar Temas -->
+      <div class="col-6 col-md-3">
+        <a routerLink="/temas" class="action-card card h-100 text-decoration-none">
+          <div class="card-body text-center d-flex flex-column align-items-center justify-content-center py-4">
+            <div class="action-icon mb-3 text-secondary">
+              <i class="fas fa-palette"></i>
+            </div>
+            <span class="action-text text-dark fw-medium">Gerenciar Temas</span>
+          </div>
+        </a>
+      </div>
       
-      <a href="#" class="action-card" (click)="showComingSoon('Tipos de Evento')">
-        <i class="fas fa-calendar-plus"></i>
-        <span>Tipos de Evento</span>
-      </a>
+      <!-- Ação Tipos de Evento -->
+      <div class="col-6 col-md-3">
+        <a href="#" class="action-card card h-100 text-decoration-none" (click)="showComingSoon('Tipos de Evento'); $event.preventDefault()">
+          <div class="card-body text-center d-flex flex-column align-items-center justify-content-center py-4">
+            <div class="action-icon mb-3 text-dark">
+              <i class="fas fa-calendar-alt"></i>
+            </div>
+            <span class="action-text text-dark fw-medium">Tipos de Evento</span>
+          </div>
+        </a>
+      </div>
     </div>
   </div>
 </div>

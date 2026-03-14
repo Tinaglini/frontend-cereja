@@ -1,126 +1,80 @@
-<nav class="navbar navbar-expand-lg navbar-light fixed-top fade-in-down">
-  <div class="container-fluid px-4">
-    <a class="navbar-brand fw-bold" href="#">
-      <i class="fas fa-birthday-cake me-2"></i>
-      Tia Cereja
-    </a>
-
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-      <span class="navbar-toggler-icon"></span>
+<header class="top-header">
+  <div class="header-left">
+    <button class="btn-toggle d-none d-lg-block" (click)="onToggleSidebar()">
+      <i class="fas fa-bars"></i>
     </button>
+    <div class="page-title ms-3 d-none d-md-block">
+      <h5 class="mb-0 fw-bold text-dark">Gestão de Festas</h5>
+      <small class="text-muted">Painel Administrativo</small>
+    </div>
+  </div>
 
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav me-auto ms-4">
-        <li class="nav-item me-3">
-          <a class="nav-link" routerLink="/dashboard" routerLinkActive="active">
-            <i class="fas fa-tachometer-alt me-1"></i>
-            Dashboard
-          </a>
-        </li>
-        <li class="nav-item me-3">
-          <a class="nav-link" routerLink="/clientes" routerLinkActive="active">
-            <i class="fas fa-users me-1"></i>
-            Clientes
-          </a>
-        </li>
-        <li class="nav-item me-3">
-          <a class="nav-link" routerLink="/enderecos" routerLinkActive="active">
-            <i class="fas fa-map-marker-alt me-1"></i>
-            Endereços
-          </a>
-        </li>
-        <li class="nav-item me-3">
-          <a class="nav-link" routerLink="/temas" routerLinkActive="active">
-            <i class="fas fa-palette me-1"></i>
-            Temas
-          </a>
-        </li>
-      </ul>
-
-      <!-- Barra de Busca -->
-      <div class="search-container" *ngIf="isLoggedIn">
-        <div class="search-wrapper">
-          <i class="fas fa-search search-icon"></i>
-          <input 
-            type="text" 
-            class="search-input" 
-            [(ngModel)]="termoBusca"
-            (input)="onBuscaChange()"
-            (focus)="onBuscaFocus()"
-            (blur)="onBuscaBlur()"
-            placeholder="Buscar clientes, temas..."
-            autocomplete="off">
-          <button 
-            class="search-clear" 
-            *ngIf="termoBusca"
-            (click)="limparBusca()"
-            type="button">
-            <i class="fas fa-times"></i>
-          </button>
-          <div class="search-spinner" *ngIf="buscando">
-            <i class="fas fa-spinner fa-spin"></i>
-          </div>
+  <div class="header-right">
+    <!-- Barra de Busca -->
+    <div class="search-container" *ngIf="isLoggedIn">
+      <div class="search-wrapper">
+        <i class="fas fa-search search-icon"></i>
+        <input 
+          type="text" 
+          class="search-input" 
+          [(ngModel)]="termoBusca"
+          (input)="onBuscaChange()"
+          (focus)="onBuscaFocus()"
+          (blur)="onBuscaBlur()"
+          placeholder="Buscar orçamentos..."
+          autocomplete="off">
+        <button class="search-clear" *ngIf="termoBusca" (click)="limparBusca()" type="button">
+          <i class="fas fa-times"></i>
+        </button>
+        <div class="search-spinner" *ngIf="buscando">
+          <i class="fas fa-spinner fa-spin"></i>
         </div>
-        
-        <!-- Dropdown de Resultados -->
-        <div class="search-results" *ngIf="mostrarResultados && resultados.length > 0">
-          <div 
-            class="search-result-item" 
-            *ngFor="let resultado of resultados"
-            (click)="selecionarResultado(resultado)">
-            <div class="result-icon">
-              <i class="fas" [ngClass]="resultado.tipo === 'cliente' ? 'fa-user' : 'fa-palette'"></i>
-            </div>
-            <div class="result-content">
-              <div class="result-title">{{ resultado.titulo }}</div>
-              <div class="result-subtitle" *ngIf="resultado.subtitulo">{{ resultado.subtitulo }}</div>
-            </div>
-            <div class="result-type">
-              <span class="badge" [ngClass]="resultado.tipo === 'cliente' ? 'badge-cliente' : 'badge-tema'">
-                {{ resultado.tipo === 'cliente' ? 'Cliente' : 'Tema' }}
-              </span>
-            </div>
+      </div>
+      
+      <!-- Dropdown de Resultados -->
+      <div class="search-results" *ngIf="mostrarResultados && resultados.length > 0">
+        <div class="search-result-item" *ngFor="let resultado of resultados" (click)="selecionarResultado(resultado)">
+          <div class="result-icon">
+            <i class="fas" [ngClass]="resultado.tipo === 'cliente' ? 'fa-user' : 'fa-palette'"></i>
           </div>
-        </div>
-        
-        <div class="search-results search-empty" *ngIf="mostrarResultados && resultados.length === 0 && !buscando && termoBusca.length >= 2">
-          <div class="search-empty-message">
-            <i class="fas fa-search"></i>
-            <p>Nenhum resultado encontrado</p>
+          <div class="result-content">
+            <div class="result-title">{{ resultado.titulo }}</div>
+            <div class="result-subtitle" *ngIf="resultado.subtitulo">{{ resultado.subtitulo }}</div>
           </div>
         </div>
       </div>
+    </div>
 
-      <ul class="navbar-nav ms-auto">
-        <li class="nav-item dropdown" *ngIf="isLoggedIn">
-          <a class="nav-link dropdown-toggle" role="button" 
-             data-bs-toggle="dropdown" aria-expanded="false" 
-             (click)="$event.preventDefault()">
-            <i class="fas fa-user me-1"></i>
-            <span class="user-name">{{ getUserDisplayName() }}</span>
-          </a>
-          <ul class="dropdown-menu dropdown-menu-end">
-            <li class="dropdown-header">
-              <div class="d-flex flex-column">
-                <span class="fw-bold">{{ getUserDisplayName() }}</span>
-                <small class="text-muted">{{ currentUser?.email }}</small>
-              </div>
-            </li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" (click)="$event.preventDefault()"><i class="fas fa-user me-2"></i>Perfil</a></li>
-            <li><a class="dropdown-item" (click)="$event.preventDefault()"><i class="fas fa-cog me-2"></i>Configurações</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item text-danger" (click)="logout(); $event.preventDefault()"><i
-                  class="fas fa-sign-out-alt me-2"></i>Sair</a></li>
-          </ul>
+    <!-- User Dropdown -->
+    <div class="user-profile dropdown" *ngIf="isLoggedIn">
+      <button class="btn-user dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+        <div class="avatar">
+          <span class="initial">{{ getUserDisplayName().charAt(0).toUpperCase() }}</span>
+        </div>
+        <div class="user-info d-none d-md-block">
+          <span class="user-name">{{ getUserDisplayName() }}</span>
+        </div>
+      </button>
+      
+      <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+        <li class="dropdown-header">
+          <div class="d-flex flex-column">
+            <span class="fw-bold">{{ getUserDisplayName() }}</span>
+            <small class="text-muted">{{ currentUser?.email }}</small>
+          </div>
         </li>
-
-        <li class="nav-item" *ngIf="!isLoggedIn"> <a class="nav-link" routerLink="/login">
-            <i class="fas fa-sign-in-alt me-1"></i>
-            Login
-          </a>
-        </li>
+        <li><hr class="dropdown-divider"></li>
+        <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i>Meu Perfil</a></li>
+        <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>Configurações</a></li>
+        <li><hr class="dropdown-divider"></li>
+        <li><a class="dropdown-item text-danger" (click)="logout(); $event.preventDefault()">
+          <i class="fas fa-sign-out-alt me-2"></i>Sair
+        </a></li>
       </ul>
     </div>
+
+    <div class="user-profile" *ngIf="!isLoggedIn">
+      <button class="btn btn-primary" routerLink="/login">Login</button>
+    </div>
   </div>
-</nav>
+</header>

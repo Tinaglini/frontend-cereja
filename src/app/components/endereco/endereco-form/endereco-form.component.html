@@ -1,186 +1,179 @@
 <div class="endereco-form-container fade-in">
-  <div class="endereco-form-header">
-    <h1 class="endereco-form-title">
-      <i class="fas fa-map-marker-alt me-3"></i>
-      {{ isEdit ? 'Editar Endereço' : 'Novo Endereço' }}
-    </h1>
-    <p class="endereco-form-subtitle">
-      {{ isEdit ? 'Atualize as informações do endereço' : 'Preencha os dados do novo endereço' }}
-    </p>
+  <!-- Header -->
+  <div class="page-header d-flex justify-content-between align-items-center mb-4">
+    <div class="header-content">
+      <h1 class="display-font text-dark mb-1">
+        <i class="fas fa-map-marker-alt text-primary me-3"></i>
+        {{ isEdit ? 'Editar Endereço' : 'Novo Endereço' }}
+      </h1>
+      <p class="text-muted mb-0">{{ isEdit ? 'Atualize as informações do endereço' : 'Preencha os dados do local do evento ou cliente' }}</p>
+    </div>
+    <button class="btn btn-outline-secondary shadow-sm" (click)="cancelar()">
+      <i class="fas fa-arrow-left me-2"></i> Voltar
+    </button>
   </div>
 
-  <div class="endereco-form-content">
-    <form (ngSubmit)="salvar()" #enderecoForm="ngForm">
-      <div class="row">
-        <div class="col-md-8">
-          <div class="form-group">
-            <label for="rua" class="form-label">
-              <i class="fas fa-road me-2"></i>
-              Rua *
-            </label>
-            <input
-              type="text"
-              id="rua"
-              class="form-control"
-              [(ngModel)]="endereco.rua"
-              name="rua"
-              placeholder="Ex: Rua das Flores"
-              required
-            >
-          </div>
-        </div>
-        
-        <div class="col-md-4">
-          <div class="form-group">
-            <label for="numero" class="form-label">
-              <i class="fas fa-hashtag me-2"></i>
-              Número *
-            </label>
-            <input
-              type="text"
-              id="numero"
-              class="form-control"
-              [(ngModel)]="endereco.numero"
-              name="numero"
-              placeholder="Ex: 123"
-              required
-            >
-          </div>
-        </div>
-      </div>
+  <div class="row">
+    <div class="col-lg-8">
+      <div class="card border-0 shadow-sm mt-2">
+        <div class="card-body p-4 p-md-5">
+          <form (ngSubmit)="salvar()" #enderecoForm="ngForm">
+            
+            <h5 class="fw-bold text-dark mb-4 pb-2 border-bottom">Localização</h5>
+            
+            <!-- CEP -->
+            <div class="row g-4 mb-3">
+              <div class="col-md-5">
+                <div class="form-floating">
+                  <input
+                    type="text"
+                    id="cep"
+                    class="form-control"
+                    [(ngModel)]="endereco.cep"
+                    name="cep"
+                    placeholder="00000-000"
+                    required>
+                  <label for="cep">CEP *</label>
+                </div>
+              </div>
+            </div>
 
-      <div class="form-group">
-        <label for="complemento" class="form-label">
-          <i class="fas fa-home me-2"></i>
-          Complemento
-        </label>
-        <input
-          type="text"
-          id="complemento"
-          class="form-control"
-          [(ngModel)]="endereco.complemento"
-          name="complemento"
-          placeholder="Ex: Apartamento 101, Bloco A"
-        >
-      </div>
+            <!-- Rua e Número -->
+            <div class="row g-4 mb-3">
+              <div class="col-md-8">
+                <div class="form-floating">
+                  <input
+                    type="text"
+                    id="rua"
+                    class="form-control"
+                    [(ngModel)]="endereco.rua"
+                    name="rua"
+                    placeholder="Rua das Flores"
+                    required>
+                  <label for="rua">Rua / Logradouro *</label>
+                </div>
+              </div>
+              
+              <div class="col-md-4">
+                <div class="form-floating">
+                  <input
+                    type="text"
+                    id="numero"
+                    class="form-control"
+                    [(ngModel)]="endereco.numero"
+                    name="numero"
+                    placeholder="123"
+                    required>
+                  <label for="numero">Número *</label>
+                </div>
+              </div>
+            </div>
 
-      <div class="row">
-        <div class="col-md-6">
-          <div class="form-group">
-            <label for="bairro" class="form-label">
-              <i class="fas fa-map me-2"></i>
-              Bairro *
-            </label>
-            <input
-              type="text"
-              id="bairro"
-              class="form-control"
-              [(ngModel)]="endereco.bairro"
-              name="bairro"
-              placeholder="Ex: Centro"
-              required
-            >
-          </div>
-        </div>
-        
-        <div class="col-md-4">
-          <div class="form-group">
-            <label for="cidade" class="form-label">
-              <i class="fas fa-city me-2"></i>
-              Cidade *
-            </label>
-            <input
-              type="text"
-              id="cidade"
-              class="form-control"
-              [(ngModel)]="endereco.cidade"
-              name="cidade"
-              placeholder="Ex: São Paulo"
-              required
-            >
-          </div>
-        </div>
-        
-        <div class="col-md-2">
-          <div class="form-group">
-            <label for="estado" class="form-label">
-              <i class="fas fa-flag me-2"></i>
-              Estado *
-            </label>
-            <input
-              type="text"
-              id="estado"
-              class="form-control"
-              [(ngModel)]="endereco.estado"
-              name="estado"
-              placeholder="Ex: SP"
-              maxlength="2"
-              required
-            >
-          </div>
-        </div>
-      </div>
+            <!-- Complemento e Bairro -->
+            <div class="row g-4 mb-3">
+              <div class="col-md-6">
+                <div class="form-floating">
+                  <input
+                    type="text"
+                    id="complemento"
+                    class="form-control"
+                    [(ngModel)]="endereco.complemento"
+                    name="complemento"
+                    placeholder="Apto 101">
+                  <label for="complemento">Complemento</label>
+                </div>
+              </div>
+              
+              <div class="col-md-6">
+                <div class="form-floating">
+                  <input
+                    type="text"
+                    id="bairro"
+                    class="form-control"
+                    [(ngModel)]="endereco.bairro"
+                    name="bairro"
+                    placeholder="Centro"
+                    required>
+                  <label for="bairro">Bairro *</label>
+                </div>
+              </div>
+            </div>
 
-      <div class="row">
-        <div class="col-md-4">
-          <div class="form-group">
-            <label for="cep" class="form-label">
-              <i class="fas fa-mail-bulk me-2"></i>
-              CEP *
-            </label>
-            <input
-              type="text"
-              id="cep"
-              class="form-control"
-              [(ngModel)]="endereco.cep"
-              name="cep"
-              placeholder="Ex: 01234-567"
-              required
-            >
-          </div>
-        </div>
-        
-        <div class="col-md-4">
-          <div class="form-group">
-            <label for="clienteId" class="form-label">
-              <i class="fas fa-user me-2"></i>
-              Cliente (ID)
-            </label>
-            <input
-              type="number"
-              id="clienteId"
-              class="form-control"
-              [(ngModel)]="endereco.clienteId"
-              name="clienteId"
-              placeholder="Ex: 1"
-            >
-          </div>
-        </div>
-      </div>
+            <!-- Cidade e Estado -->
+            <div class="row g-4 mb-4">
+              <div class="col-md-8">
+                <div class="form-floating">
+                  <input
+                    type="text"
+                    id="cidade"
+                    class="form-control"
+                    [(ngModel)]="endereco.cidade"
+                    name="cidade"
+                    placeholder="São Paulo"
+                    required>
+                  <label for="cidade">Cidade *</label>
+                </div>
+              </div>
+              
+              <div class="col-md-4">
+                <div class="form-floating">
+                  <input
+                    type="text"
+                    id="estado"
+                    class="form-control"
+                    [(ngModel)]="endereco.estado"
+                    name="estado"
+                    placeholder="SP"
+                    maxlength="2"
+                    required>
+                  <label for="estado">Estado (UF) *</label>
+                </div>
+              </div>
+            </div>
 
-      <div class="form-actions">
-        <button
-          type="button"
-          class="btn btn-secondary"
-          (click)="cancelar()"
-          [disabled]="loading"
-        >
-          <i class="fas fa-times me-2"></i>
-          Cancelar
-        </button>
-        
-        <button
-          type="submit"
-          class="btn btn-primary"
-          [disabled]="loading || enderecoForm.invalid"
-        >
-          <span *ngIf="loading" class="spinner-border spinner-border-sm me-2" role="status">
-            <span class="visually-hidden">Carregando...</span>
-          </span>
-          <i *ngIf="!loading" class="fas fa-save me-2"></i>
-          {{ loading ? 'Salvando...' : (isEdit ? 'Atualizar' : 'Salvar') }}
-        </button>
+            <!-- Botões de Ação -->
+            <div class="form-actions mt-5 pt-4 border-top d-flex justify-content-end gap-3">
+              <button type="button" class="btn btn-outline-secondary px-4" (click)="cancelar()" [disabled]="loading">
+                Cancelar
+              </button>
+              <button 
+                type="submit" 
+                class="btn btn-primary px-5"
+                [disabled]="enderecoForm.invalid || loading">
+                <span *ngIf="!loading">
+                  <i class="fas fa-save me-2"></i> {{ isEdit ? 'Salvar Alterações' : 'Cadastrar Endereço' }}
+                </span>
+                <span *ngIf="loading">
+                  <i class="fas fa-spinner fa-spin me-2"></i> Salvando...
+                </span>
+              </button>
+            </div>
+
+          </form>
+        </div>
       </div>
-    </form>
+    </div>
+    
+    <!-- Painel Lateral / Dicas -->
+    <div class="col-lg-4 d-none d-lg-block mt-2">
+      <div class="card border-0 bg-secondary-soft shadow-none h-100">
+        <div class="card-body p-4">
+          <div class="text-center mb-4">
+            <div class="bg-white rounded-circle d-inline-flex align-items-center justify-content-center shadow-sm mb-3" style="width: 60px; height: 60px;">
+              <i class="fas fa-map-marked-alt text-secondary fa-xl"></i>
+            </div>
+            <h5 class="fw-bold text-dark">Dica de Entrega</h5>
+          </div>
+          <p class="text-muted text-center" style="font-size: 0.95rem;">
+            Um endereço detalhado diminui a chance de atrasos na entrega dos itens da festa e facilita o planejamento da logística da sua equipe.
+          </p>
+          <hr class="my-4 border-secondary opacity-25">
+          <ul class="list-unstyled text-muted small">
+            <li class="mb-2"><i class="fas fa-check-circle text-secondary me-2"></i> Se houver portaria ou condomínio fechado, não esqueça do <strong>Complemento</strong>.</li>
+            <li class="mb-2"><i class="fas fa-check-circle text-secondary me-2"></i> Verifique se o CEP está correto para cálculo de fretes.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

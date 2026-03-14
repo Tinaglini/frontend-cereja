@@ -1,7 +1,69 @@
-<div class="layout-container">
-  <app-navbar></app-navbar>
-  <main class="main-content">
-    <router-outlet></router-outlet>
-  </main>
+<div class="layout-container" [class.sidebar-collapsed]="isSidebarCollapsed">
+  <!-- Sidebar -->
+  <aside class="sidebar fade-in">
+    <div class="sidebar-header">
+      <a class="sidebar-brand" routerLink="/dashboard">
+        <i class="fas fa-gift text-accent me-2"></i>
+        <span class="brand-text">Cereja Festas</span>
+      </a>
+      <button class="btn-toggle-sidebar d-lg-none" (click)="toggleSidebar()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+
+    <div class="sidebar-content mt-4">
+      <ul class="nav flex-column sidebar-nav">
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/dashboard" routerLinkActive="active">
+            <i class="fas fa-chart-pie nav-icon"></i>
+            <span class="nav-text">Dashboard</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/clientes" routerLinkActive="active">
+            <i class="fas fa-users nav-icon"></i>
+            <span class="nav-text">Clientes</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/enderecos" routerLinkActive="active">
+            <i class="fas fa-map-marked-alt nav-icon"></i>
+            <span class="nav-text">Endereços</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/temas" routerLinkActive="active">
+            <i class="fas fa-palette nav-icon"></i>
+            <span class="nav-text">Temas</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/tipos-evento" routerLinkActive="active">
+            <i class="fas fa-glass-cheers nav-icon"></i>
+            <span class="nav-text">Tipos de Evento</span>
+          </a>
+        </li>
+        <li class="nav-item mt-2">
+          <a class="nav-link btn-new-order" routerLink="/solicitacoes" routerLinkActive="active">
+            <i class="fas fa-file-invoice-dollar nav-icon"></i>
+            <span class="nav-text">Solicitações</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </aside>
+
+  <!-- Main Content Wrapper -->
+  <div class="main-wrapper">
+    <!-- O Navbar agora age como top header -->
+    <app-navbar (toggleSidebarEvent)="toggleSidebar()"></app-navbar>
+
+    <main class="main-content fade-in-down">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+
+  <!-- Overlay para Mobile -->
+  <div class="sidebar-overlay d-lg-none" *ngIf="!isSidebarCollapsed" (click)="toggleSidebar()"></div>
   <app-toast></app-toast>
 </div>

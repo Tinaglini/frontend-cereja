@@ -1,0 +1,164 @@
+<div class="tipo-evento-form-container fade-in">
+  <!-- Header -->
+  <div class="page-header d-flex justify-content-between align-items-center mb-4">
+    <div class="header-content">
+      <h1 class="display-font text-dark mb-1">
+        <i class="fas fa-calendar-plus text-primary me-3"></i>
+        {{ isEdit ? 'Editar Tipo de Evento' : 'Novo Tipo de Evento' }}
+      </h1>
+      <p class="text-muted mb-0">{{ isEdit ? 'Atualize as configurações desta categoria de evento.' : 'Cadastre uma nova categoria de festa (ex: Casamento, Aniversário Infantil).' }}</p>
+    </div>
+    <button class="btn btn-outline-secondary shadow-sm" (click)="cancelar()">
+      <i class="fas fa-arrow-left me-2"></i> Voltar
+    </button>
+  </div>
+
+  <div class="row">
+    <div class="col-lg-8">
+      <div class="card border-0 shadow-sm mt-2">
+        <div class="card-body p-4 p-md-5">
+          <form (ngSubmit)="salvar()" #tipoForm="ngForm">
+            
+            <h5 class="fw-bold text-dark mb-4 pb-2 border-bottom">Detalhes do Evento</h5>
+            
+            <div class="row g-4 mb-3">
+              <div class="col-md-12">
+                <div class="form-floating">
+                  <input
+                    type="text"
+                    id="nome"
+                    class="form-control"
+                    [(ngModel)]="tipoEvento.nome"
+                    name="nome"
+                    placeholder="Ex: Casamento"
+                    required>
+                  <label for="nome">Nome do Tipo de Evento *</label>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-floating mb-4">
+              <textarea
+                id="descricao"
+                class="form-control"
+                [(ngModel)]="tipoEvento.descricao"
+                name="descricao"
+                placeholder="Descreva o evento..."
+                style="height: 100px"></textarea>
+              <label for="descricao">Descrição ou observações</label>
+            </div>
+
+            <h5 class="fw-bold text-dark mb-4 pb-2 border-bottom mt-5">Parâmetros</h5>
+
+            <div class="row g-4 mb-4">
+              <div class="col-md-4">
+                <div class="form-floating">
+                  <input
+                    type="number"
+                    id="capacidadeMinima"
+                    class="form-control"
+                    [(ngModel)]="tipoEvento.capacidadeMinima"
+                    name="capacidadeMinima"
+                    placeholder="10"
+                    min="1"
+                    required>
+                  <label for="capacidadeMinima">Capacidade Mínima *</label>
+                </div>
+              </div>
+              
+              <div class="col-md-4">
+                <div class="form-floating">
+                  <input
+                    type="number"
+                    id="capacidadeMaxima"
+                    class="form-control"
+                    [(ngModel)]="tipoEvento.capacidadeMaxima"
+                    name="capacidadeMaxima"
+                    placeholder="50"
+                    [min]="tipoEvento.capacidadeMinima"
+                    required>
+                  <label for="capacidadeMaxima">Capacidade Máxima *</label>
+                </div>
+              </div>
+
+              <div class="col-md-4">
+                <div class="form-floating position-relative">
+                  <span class="position-absolute top-50 translate-middle-y text-muted ms-3">h</span>
+                  <input
+                    type="number"
+                    id="duracaoMedia"
+                    class="form-control ps-5"
+                    [(ngModel)]="tipoEvento.duracaoMedia"
+                    name="duracaoMedia"
+                    placeholder="4"
+                    step="0.5"
+                    min="0"
+                    required>
+                  <label for="duracaoMedia" class="ps-5">Duração Média *</label>
+                </div>
+              </div>
+            </div>
+
+            <div class="card bg-light border-0 px-4 py-3 mb-4 rounded-3 d-flex flex-row align-items-center justify-content-between" 
+                 (click)="tipoEvento.ativo = !tipoEvento.ativo"
+                 style="cursor: pointer;">
+              <div>
+                <h6 class="mb-1 text-dark fw-bold">Status do Tipo de Evento</h6>
+                <small class="text-muted">Se inativo, não aparecerá nas opções ao criar novos orçamentos.</small>
+              </div>
+              <div class="form-check form-switch fs-4 m-0">
+                <input
+                  type="checkbox"
+                  id="ativo"
+                  class="form-check-input"
+                  [(ngModel)]="tipoEvento.ativo"
+                  name="ativo"
+                  (click)="$event.stopPropagation()">
+              </div>
+            </div>
+
+            <!-- Botões de Ação -->
+            <div class="form-actions mt-5 pt-4 border-top d-flex justify-content-end gap-3">
+              <button type="button" class="btn btn-outline-secondary px-4" (click)="cancelar()" [disabled]="loading">
+                Cancelar
+              </button>
+              <button 
+                type="submit" 
+                class="btn btn-primary px-5"
+                [disabled]="tipoForm.invalid || loading">
+                <span *ngIf="!loading">
+                  <i class="fas fa-save me-2"></i> {{ isEdit ? 'Salvar Alterações' : 'Cadastrar Tipo de Evento' }}
+                </span>
+                <span *ngIf="loading">
+                  <i class="fas fa-spinner fa-spin me-2"></i> Salvando...
+                </span>
+              </button>
+            </div>
+
+          </form>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Painel Lateral / Dicas -->
+    <div class="col-lg-4 d-none d-lg-block mt-2">
+      <div class="card border-0 bg-primary-soft shadow-none h-100">
+        <div class="card-body p-4">
+          <div class="text-center mb-4">
+            <div class="bg-white rounded-circle d-inline-flex align-items-center justify-content-center shadow-sm mb-3" style="width: 60px; height: 60px;">
+              <i class="fas fa-info-circle text-accent fa-xl"></i>
+            </div>
+            <h5 class="fw-bold text-dark">Dica de Serviço</h5>
+          </div>
+          <p class="text-muted text-center" style="font-size: 0.95rem;">
+            As capacidades mínima e máxima auxiliam a validar o número de convidados permitidos quando o cliente solicitar um orçamento.
+          </p>
+          <hr class="my-4 border-primary opacity-25">
+          <ul class="list-unstyled text-muted small">
+            <li class="mb-2"><i class="fas fa-clock text-accent me-2"></i> A duração média é apenas uma estimativa do tempo da festa e afeta a locação de espaço.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

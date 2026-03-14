@@ -1,189 +1,197 @@
 <div class="tema-form-container fade-in">
-  <div class="tema-form-header">
-    <div>
-      <h1 class="tema-form-title">
-        <i class="fas fa-palette"></i>
+  <!-- Header -->
+  <div class="page-header d-flex justify-content-between align-items-center mb-4">
+    <div class="header-content">
+      <h1 class="display-font text-dark mb-1">
+        <i class="fas fa-palette text-primary me-3"></i>
         {{ isEdit ? 'Editar Tema' : 'Novo Tema' }}
       </h1>
-      <p class="tema-form-subtitle">
-        {{ isEdit ? 'Atualize as informações do tema' : 'Preencha os dados do novo tema' }}
-      </p>
+      <p class="text-muted mb-0">{{ isEdit ? 'Atualize as opções visuais e de preço deste tema.' : 'Configure um novo tema e as cores associadas.' }}</p>
+    </div>
+    <button class="btn btn-outline-secondary shadow-sm" (click)="cancelar()">
+      <i class="fas fa-arrow-left me-2"></i> Voltar
+    </button>
+  </div>
+
+  <div class="row g-4">
+    <div class="col-lg-7">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body p-4 p-md-5">
+          <form (ngSubmit)="salvar()" #temaForm="ngForm">
+            
+            <h5 class="fw-bold text-dark mb-4 pb-2 border-bottom">Informações Gerais</h5>
+            
+            <div class="row g-4 mb-3">
+              <div class="col-md-8">
+                <div class="form-floating">
+                  <input
+                    type="text"
+                    id="nome"
+                    class="form-control"
+                    [(ngModel)]="tema.nome"
+                    name="nome"
+                    placeholder="Nome do Tema"
+                    required>
+                  <label for="nome">Nome do Tema *</label>
+                </div>
+              </div>
+              
+              <div class="col-md-4">
+                <div class="form-floating position-relative">
+                  <span class="position-absolute top-50 translate-middle-y text-muted ms-3">R$</span>
+                  <input
+                    type="number"
+                    id="precoBase"
+                    class="form-control ps-5"
+                    [(ngModel)]="tema.precoBase"
+                    name="precoBase"
+                    placeholder="0.00"
+                    step="0.01"
+                    min="0">
+                  <label for="precoBase" class="ps-5">Preço Base</label>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-floating mb-4">
+              <textarea
+                id="descricao"
+                class="form-control"
+                [(ngModel)]="tema.descricao"
+                name="descricao"
+                placeholder="Descreva o tema..."
+                style="height: 100px"></textarea>
+              <label for="descricao">Descrição ou observações</label>
+            </div>
+
+            <h5 class="fw-bold text-dark mb-4 pb-2 border-bottom mt-5">Identidade Visual</h5>
+
+            <div class="row g-4 mb-4">
+              <div class="col-md-6">
+                <label for="corPrincipal" class="form-label text-muted fw-bold small text-uppercase">Cor Principal *</label>
+                <div class="input-group">
+                  <input
+                    type="color"
+                    id="corPrincipal"
+                    class="form-control form-control-color w-25 border-end-0 bg-light"
+                    [(ngModel)]="tema.corPrincipal"
+                    name="corPrincipal"
+                    required
+                    (input)="onColorChange()"
+                    title="Selecione a cor principal">
+                  <input
+                    type="text"
+                    class="form-control w-75 font-monospace text-muted"
+                    [(ngModel)]="tema.corPrincipal"
+                    name="corPrincipalText"
+                    placeholder="#DB2777">
+                </div>
+              </div>
+              
+              <div class="col-md-6">
+                <label for="corSecundaria" class="form-label text-muted fw-bold small text-uppercase">Cor Secundária</label>
+                <div class="input-group">
+                  <input
+                    type="color"
+                    id="corSecundaria"
+                    class="form-control form-control-color w-25 border-end-0 bg-light"
+                    [(ngModel)]="tema.corSecundaria"
+                    name="corSecundaria"
+                    (input)="onColorChange()"
+                    title="Selecione a cor secundária (opcional)">
+                  <input
+                    type="text"
+                    class="form-control w-75 font-monospace text-muted"
+                    [(ngModel)]="tema.corSecundaria"
+                    name="corSecundariaText"
+                    placeholder="Opcional">
+                </div>
+              </div>
+            </div>
+
+            <div class="card bg-light border-0 px-4 py-3 mb-4 rounded-3 d-flex flex-row align-items-center justify-content-between cursor-pointer" 
+                 (click)="tema.ativo = !tema.ativo"
+                 style="cursor: pointer;">
+              <div>
+                <h6 class="mb-1 text-dark fw-bold">Disponibilidade do Tema</h6>
+                <small class="text-muted">Desative se o tema temporariamente não estiver disponível para novos orçamentos.</small>
+              </div>
+              <div class="form-check form-switch fs-4 m-0">
+                <input
+                  type="checkbox"
+                  id="ativo"
+                  class="form-check-input"
+                  [(ngModel)]="tema.ativo"
+                  name="ativo"
+                  (click)="$event.stopPropagation()">
+              </div>
+            </div>
+
+            <!-- Botões de Ação -->
+            <div class="form-actions mt-5 pt-4 border-top d-flex justify-content-end gap-3">
+              <button type="button" class="btn btn-outline-secondary px-4" (click)="cancelar()" [disabled]="loading">
+                Cancelar
+              </button>
+              <button 
+                type="submit" 
+                class="btn btn-primary px-5"
+                [disabled]="temaForm.invalid || loading">
+                <span *ngIf="!loading">
+                  <i class="fas fa-save me-2"></i> {{ isEdit ? 'Salvar Alterações' : 'Cadastrar Tema' }}
+                </span>
+                <span *ngIf="loading">
+                  <i class="fas fa-spinner fa-spin me-2"></i> Salvando...
+                </span>
+              </button>
+            </div>
+
+          </form>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Painel Lateral / Preview -->
+    <div class="col-lg-5">
+      <div class="card border-0 shadow-sm sticky-top" style="top: 100px;">
+        <div class="card-body p-4 p-md-5">
+          <h5 class="fw-bold text-dark border-bottom pb-3 mb-4">Preview do Tema</h5>
+          
+          <div class="tema-preview-card rounded-4 overflow-hidden mb-4 shadow-sm">
+            <div class="tema-card-banner position-relative" [style.background]="'linear-gradient(135deg, ' + tema.corPrincipal + ' 0%, ' + (tema.corSecundaria || tema.corPrincipal) + ' 100%)'" style="min-height: 200px;">
+              <div class="position-absolute top-0 end-0 p-3">
+                <span class="badge" [ngClass]="tema.ativo ? 'bg-success' : 'bg-warning text-dark'">
+                  <i class="fas" [ngClass]="tema.ativo ? 'fa-check-circle' : 'fa-times-circle'"></i>
+                  {{ tema.ativo ? 'Ativo' : 'Inativo' }}
+                </span>
+              </div>
+              <div class="banner-content d-flex w-100 h-100 align-items-center justify-content-center text-white p-4 text-center">
+                <div>
+                  <i class="fas fa-camera-retro fa-3x mb-3 opacity-75"></i>
+                  <h4 class="fw-bold m-0 text-shadow">{{ tema.nome || 'Nome do Tema' }}</h4>
+                </div>
+              </div>
+            </div>
+            <div class="bg-white p-4 text-center">
+              <p class="text-muted small mb-3">{{ tema.descricao || 'Adicione uma descrição para ver o preview.' }}</p>
+              <h5 class="text-success fw-bold m-0">
+                <span *ngIf="tema.precoBase">R$ {{ tema.precoBase | number:'1.2-2' }}</span>
+                <span *ngIf="!tema.precoBase" class="text-muted fs-6 fst-italic">Sem preço base</span>
+              </h5>
+            </div>
+          </div>
+
+          <div class="d-flex justify-content-between align-items-center visual-colors-preview">
+            <div class="d-flex align-items-center gap-3">
+              <div class="rounded-circle shadow-sm" [style.backgroundColor]="tema.corPrincipal" style="width: 32px; height: 32px;"></div>
+              <small class="text-muted fw-bold">Principal</small>
+            </div>
+            <div class="d-flex align-items-center gap-3" *ngIf="tema.corSecundaria">
+              <div class="rounded-circle shadow-sm" [style.backgroundColor]="tema.corSecundaria" style="width: 32px; height: 32px;"></div>
+              <small class="text-muted fw-bold">Secundária</small>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
-
-  <div class="tema-form-content">
-    <form (ngSubmit)="salvar()" #temaForm="ngForm">
-      <div class="row">
-        <div class="col-md-8">
-          <div class="form-group">
-            <label for="nome" class="form-label">
-              <i class="fas fa-tag me-2"></i>
-              Nome do Tema *
-            </label>
-            <input
-              type="text"
-              id="nome"
-              class="form-control"
-              [(ngModel)]="tema.nome"
-              name="nome"
-              placeholder="Ex: Festa de Aniversário"
-              required
-            >
-          </div>
-        </div>
-        
-        <div class="col-md-4">
-          <div class="form-group">
-            <label for="precoBase" class="form-label">
-              <i class="fas fa-dollar-sign me-2"></i>
-              Preço Base
-            </label>
-            <input
-              type="number"
-              id="precoBase"
-              class="form-control"
-              [(ngModel)]="tema.precoBase"
-              name="precoBase"
-              placeholder="0.00"
-              step="0.01"
-              min="0"
-            >
-          </div>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label for="descricao" class="form-label">
-          <i class="fas fa-align-left me-2"></i>
-          Descrição
-        </label>
-        <textarea
-          id="descricao"
-          class="form-control"
-          [(ngModel)]="tema.descricao"
-          name="descricao"
-          placeholder="Descreva o tema..."
-          rows="3"
-        ></textarea>
-      </div>
-
-      <div class="row">
-        <div class="col-md-6">
-          <div class="form-group">
-            <label for="corPrincipal" class="form-label">
-              <i class="fas fa-paint-brush me-2"></i>
-              Cor Principal *
-            </label>
-            <div class="color-input-wrapper">
-              <input
-                type="color"
-                id="corPrincipal"
-                class="color-picker"
-                [(ngModel)]="tema.corPrincipal"
-                name="corPrincipal"
-                required
-                (input)="onColorChange()"
-              >
-              <div class="color-display">
-                <div class="color-preview" [style.background-color]="tema.corPrincipal"></div>
-                <input
-                  type="text"
-                  class="color-input"
-                  [(ngModel)]="tema.corPrincipal"
-                  placeholder="#667eea"
-                  name="corPrincipalText"
-                >
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        <div class="col-md-6">
-          <div class="form-group">
-            <label for="corSecundaria" class="form-label">
-              <i class="fas fa-paint-brush me-2"></i>
-              Cor Secundária
-            </label>
-            <div class="color-input-wrapper">
-              <input
-                type="color"
-                id="corSecundaria"
-                class="color-picker"
-                [(ngModel)]="tema.corSecundaria"
-                name="corSecundaria"
-                (input)="onColorChange()"
-              >
-              <div class="color-display">
-                <div class="color-preview" [style.background-color]="tema.corSecundaria || tema.corPrincipal || '#764ba2'"></div>
-                <input
-                  type="text"
-                  class="color-input"
-                  [(ngModel)]="tema.corSecundaria"
-                  placeholder="#764ba2 (opcional)"
-                  name="corSecundariaText"
-                >
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Preview do Tema -->
-      <div class="preview-section">
-        <label class="form-label">
-          <i class="fas fa-eye me-2"></i>
-          Preview do Tema
-        </label>
-        <div class="theme-preview" [style.background]="'linear-gradient(135deg, ' + tema.corPrincipal + ' 0%, ' + (tema.corSecundaria || tema.corPrincipal) + ' 100%)'">
-          <div class="preview-content">
-            <i class="fas fa-palette preview-icon-large"></i>
-            <h3 class="preview-name">{{ tema.nome || 'Nome do Tema' }}</h3>
-            <p class="preview-desc" *ngIf="tema.descricao">{{ tema.descricao }}</p>
-            <p class="preview-desc-placeholder" *ngIf="!tema.descricao">Descrição do tema aparecerá aqui</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <div class="form-check">
-          <input
-            type="checkbox"
-            id="ativo"
-            class="form-check-input"
-            [(ngModel)]="tema.ativo"
-            name="ativo"
-          >
-          <label for="ativo" class="form-check-label">
-            <i class="fas fa-check-circle me-2"></i>
-            Tema ativo
-          </label>
-        </div>
-      </div>
-
-      <div class="form-actions">
-        <button
-          type="button"
-          class="btn btn-secondary"
-          (click)="cancelar()"
-          [disabled]="loading"
-        >
-          <i class="fas fa-times me-2"></i>
-          Cancelar
-        </button>
-        
-        <button
-          type="submit"
-          class="btn btn-primary"
-          [disabled]="loading || temaForm.invalid"
-        >
-          <span *ngIf="loading" class="spinner-border spinner-border-sm me-2" role="status">
-            <span class="visually-hidden">Carregando...</span>
-          </span>
-          <i *ngIf="!loading" class="fas fa-save me-2"></i>
-          {{ loading ? 'Salvando...' : (isEdit ? 'Atualizar' : 'Salvar') }}
-        </button>
-      </div>
-    </form>
-  </div>
 </div>
-

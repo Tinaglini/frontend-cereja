@@ -1,93 +1,117 @@
 <div class="cliente-list-container fade-in">
-  <div class="page-header">
+  <div class="page-header d-flex justify-content-between align-items-center mb-4">
     <div class="header-content">
-      <h1 class="page-title">
-        <i class="fas fa-users me-3"></i>
+      <h1 class="display-font text-dark mb-1">
+        <i class="fas fa-users text-primary me-3"></i>
         Clientes
       </h1>
-      <p class="page-subtitle">Gerencie seus clientes e informações de contato</p>
+      <p class="text-muted mb-0">Gerencie seus clientes e informações de contato</p>
     </div>
-    <button class="btn btn-primary" (click)="novoCliente()">
+    <button class="btn btn-primary shadow-sm" (click)="novoCliente()">
       <i class="fas fa-plus me-2"></i>
       Novo Cliente
     </button>
   </div>
 
   <!-- Filtros -->
-  <div class="filters-card">
-    <div class="row">
-      <div class="col-md-4">
-        <label class="form-label">Buscar por nome:</label>
-        <input 
-          type="text" 
-          class="form-control" 
-          [(ngModel)]="filtroNome" 
-          (input)="aplicarFiltros()"
-          placeholder="Digite o nome do cliente">
-      </div>
-      <div class="col-md-4">
-        <label class="form-label">Buscar por telefone:</label>
-        <input 
-          type="text" 
-          class="form-control" 
-          [(ngModel)]="filtroTelefone" 
-          (input)="aplicarFiltros()"
-          placeholder="Digite o telefone">
-      </div>
-      <div class="col-md-4">
-        <label class="form-label">Status do Cadastro:</label>
-        <select class="form-control" [(ngModel)]="filtroStatus" (change)="aplicarFiltros()">
-          <option value="">Todos</option>
-          <option value="COMPLETO">Completo</option>
-          <option value="INCOMPLETO">Incompleto</option>
-        </select>
+  <div class="card mb-4 border-0 shadow-sm">
+    <div class="card-body p-4">
+      <h6 class="text-muted fw-bold mb-3 text-uppercase" style="font-size: 0.8rem; letter-spacing: 0.05em;">Filtros de Busca</h6>
+      <div class="row g-3">
+        <div class="col-md-4">
+          <div class="form-floating">
+            <input 
+              type="text" 
+              class="form-control" 
+              id="filtroNome"
+              [(ngModel)]="filtroNome" 
+              (input)="aplicarFiltros()"
+              placeholder="Nome do cliente">
+            <label for="filtroNome"><i class="fas fa-search me-2 text-muted"></i>Buscar por nome</label>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-floating">
+            <input 
+              type="text" 
+              class="form-control" 
+              id="filtroTelefone"
+              [(ngModel)]="filtroTelefone" 
+              (input)="aplicarFiltros()"
+              placeholder="Telefone">
+            <label for="filtroTelefone"><i class="fas fa-phone me-2 text-muted"></i>Buscar por telefone</label>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-floating">
+            <select class="form-select" id="filtroStatus" [(ngModel)]="filtroStatus" (change)="aplicarFiltros()">
+              <option value="">Todos os status</option>
+              <option value="COMPLETO">Completo</option>
+              <option value="INCOMPLETO">Incompleto</option>
+            </select>
+            <label for="filtroStatus"><i class="fas fa-filter me-2 text-muted"></i>Status do Cadastro</label>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 
   <!-- Tabela de clientes -->
-  <div class="table-card">
-    <div class="loading" *ngIf="loading">
-      <div class="spinner-border" role="status">
+  <div class="card border-0 shadow-sm overflow-hidden">
+    <div class="loading text-center p-5" *ngIf="loading">
+      <div class="spinner-border text-primary" role="status">
         <span class="visually-hidden">Carregando...</span>
       </div>
     </div>
 
     <div class="table-responsive" *ngIf="!loading">
-      <table class="table table-hover">
-        <thead>
+      <table class="table table-hover align-middle mb-0">
+        <thead class="bg-light">
           <tr>
-            <th>Nome</th>
-            <th>Email</th>
-            <th>Telefone</th>
+            <th class="ps-4">Cliente</th>
+            <th>Contato</th>
             <th>Status</th>
             <th>Data Cadastro</th>
-            <th>Ações</th>
+            <th class="text-end pe-4">Ações</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let cliente of clientes; trackBy: trackByCliente">
-            <td>
-              <div class="cliente-info">
-                <strong>{{ cliente.nome }}</strong>
-                <small class="text-muted d-block" *ngIf="cliente.cpf">CPF: {{ cliente.cpf }}</small>
-                <small class="text-muted d-block" *ngIf="cliente.cnpj">CNPJ: {{ cliente.cnpj }}</small>
+            <td class="ps-4">
+              <div class="d-flex align-items-center">
+                <div class="avatar-circle me-3 bg-primary-soft text-primary fw-bold">
+                  {{ cliente.nome.charAt(0).toUpperCase() }}
+                </div>
+                <div>
+                  <strong class="d-block text-dark">{{ cliente.nome }}</strong>
+                  <small class="text-muted" *ngIf="cliente.cpf || cliente.cnpj">
+                    <i class="fas fa-id-card me-1"></i>
+                    {{ cliente.cpf ? cliente.cpf : cliente.cnpj }}
+                  </small>
+                </div>
               </div>
             </td>
-            <td>{{ cliente.email }}</td>
-            <td>{{ cliente.telefone }}</td>
             <td>
-              <span class="badge" [class]="cliente.statusCadastro === 'COMPLETO' ? 'bg-success' : 'bg-warning'">
+              <div class="d-flex flex-column">
+                <span class="text-dark"><i class="fas fa-phone-alt me-2 text-muted" style="width: 16px"></i>{{ cliente.telefone || 'Não informado' }}</span>
+                <small class="text-muted" *ngIf="cliente.email"><i class="fas fa-envelope me-2" style="width: 16px"></i>{{ cliente.email }}</small>
+              </div>
+            </td>
+            <td>
+              <span class="badge" [ngClass]="cliente.statusCadastro === 'COMPLETO' ? 'bg-success' : 'bg-warning'">
+                <i class="fas" [ngClass]="cliente.statusCadastro === 'COMPLETO' ? 'fa-check-circle' : 'fa-exclamation-circle'"></i>
                 {{ cliente.statusCadastro === 'COMPLETO' ? 'Completo' : 'Incompleto' }}
               </span>
             </td>
-            <td>{{ cliente.dataCadastro | date:'dd/MM/yyyy' }}</td>
             <td>
-              <div class="btn-group" role="group">
-                <button class="btn btn-sm btn-outline-primary" (click)="editarCliente(cliente)">
+              <span class="text-muted"><i class="far fa-calendar-alt me-2"></i>{{ cliente.dataCadastro | date:'dd/MM/yyyy' }}</span>
+            </td>
+            <td class="text-end pe-4">
+              <div class="btn-group gap-2" role="group">
+                <button class="btn btn-sm btn-outline-primary btn-icon" (click)="editarCliente(cliente)" title="Editar">
                   <i class="fas fa-edit"></i>
                 </button>
-                <button class="btn btn-sm btn-outline-danger" (click)="excluirCliente(cliente)">
+                <button class="btn btn-sm btn-outline-danger btn-icon" (click)="excluirCliente(cliente)" title="Excluir">
                   <i class="fas fa-trash"></i>
                 </button>
               </div>
@@ -96,13 +120,15 @@
         </tbody>
       </table>
 
-      <div class="empty-state" *ngIf="clientes.length === 0">
-        <i class="fas fa-users fa-3x text-muted mb-3"></i>
-        <h4>Nenhum cliente encontrado</h4>
-        <p class="text-muted">Comece adicionando seu primeiro cliente.</p>
+      <!-- Empty State -->
+      <div class="text-center p-5" *ngIf="clientes.length === 0">
+        <div class="empty-state-icon bg-light rounded-circle d-inline-flex align-items-center justify-content-center mb-4" style="width: 80px; height: 80px;">
+          <i class="fas fa-users-slash text-muted fa-2x"></i>
+        </div>
+        <h4 class="text-dark fw-bold">Nenhum cliente encontrado</h4>
+        <p class="text-muted mb-4">Ajuste os filtros ou crie um novo cliente para começar.</p>
         <button class="btn btn-primary" (click)="novoCliente()">
-          <i class="fas fa-plus me-2"></i>
-          Adicionar Cliente
+          <i class="fas fa-plus me-2"></i> Adicionar Cliente
         </button>
       </div>
     </div>

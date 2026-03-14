@@ -1,0 +1,40 @@
+@import '../../../../styles/variables';
+
+.solicitacao-list-container {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.bg-secondary-soft { background-color: rgba($color-secondary, 0.15); }
+
+.date-badge {
+  min-width: 60px;
+  background-color: #fafafa;
+  border-color: rgba($color-border, 0.5) !important;
+}
+
+.btn-icon {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: $border-radius-sm;
+}
+
+.dropdown-toggle::after {
+  display: none; // Esconde a setinha padrão do dropdown para usar apenas o ícone
+}
+
+// Estilos Flutuantes Específicos
+.form-floating {
+  > .form-control, > .form-select {
+    border: 1px solid rgba($color-border, 0.8);
+    background-color: $color-gray-100;
+    
+    &:focus {
+      background-color: $color-white;
+    }
+  }
+}

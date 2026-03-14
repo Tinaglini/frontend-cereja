@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -19,6 +19,8 @@ export class NavbarComponent implements OnInit {
   
   isLoggedIn = false;
   currentUser: Usuario | null = null;
+  
+  @Output() toggleSidebarEvent = new EventEmitter<void>();
   
   // Busca
   termoBusca = '';
@@ -132,5 +134,9 @@ export class NavbarComponent implements OnInit {
         )
       }
     })
+  }
+  
+  onToggleSidebar() {
+    this.toggleSidebarEvent.emit();
   }
 }
