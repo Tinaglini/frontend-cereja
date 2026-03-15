@@ -41,8 +41,8 @@
         
         <!-- Status Ribbon/Badge Header -->
         <div class="card-header bg-white border-0 pt-4 px-4 d-flex justify-content-between align-items-center">
-            <span class="badge rounded-pill px-3 py-2 fw-medium border shadow-none" [ngClass]="getStatusClass(orc.status)">
-              <i [class]="getStatusIcon(orc.status) + ' me-1'"></i> {{ orc.status }}
+            <span class="badge rounded-pill px-3 py-2 fw-medium border shadow-none" [ngClass]="getStatusClass(orc.statusOrcamento)">
+              <i [class]="getStatusIcon(orc.statusOrcamento) + ' me-1'"></i> {{ orc.statusOrcamento }}
             </span>
             <span class="text-muted small fw-medium">#{{ orc.id }}</span>
         </div>
@@ -61,7 +61,7 @@
             
             <div class="d-flex align-items-center text-secondary">
               <i class="fas fa-users w-20px text-center me-2 text-muted"></i>
-              <span><strong>Convidados:</strong> {{ orc.numeroConvidados }}</span>
+              <span><strong>Convidados:</strong> {{ orc.quantidadeConvidados }}</span>
             </div>
             
             <div class="d-flex align-items-center text-secondary" *ngIf="orc.temaFesta">

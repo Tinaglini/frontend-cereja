@@ -38,7 +38,7 @@ export class CustomerOrcamentosListComponent implements OnInit {
         // Filtra orçamentos do cliente logado se não for endpoint espedífico "meus":
         // (Ajustar de acordo com a API real. Supondo que filtra por email do cliente)
         if(user && user.email) {
-            this.orcamentos = res.filter((s: any) => s.cliente?.email === user.email);
+            this.orcamentos = res.filter((s: any) => s.cliente?.usuario?.login === user.email);
         } else {
             this.orcamentos = [];
         }
