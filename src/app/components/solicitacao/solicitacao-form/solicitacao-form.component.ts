@@ -88,9 +88,9 @@ export class SolicitacaoFormComponent implements OnInit {
           tipoEventoId: dados.tipoEvento.id!,
           temaFestaId: dados.temaFesta?.id,
           dataEvento: dataStr,
-          numeroConvidados: dados.numeroConvidados,
+          numeroConvidados: dados.quantidadeConvidados,
           observacoes: dados.observacoes,
-          status: dados.status
+          status: dados.statusOrcamento
         };
         this.loading = false;
       },

@@ -102,23 +102,23 @@
             <td>
               <span class="badge bg-secondary-soft text-dark px-2 py-1">
                 <i class="fas fa-users text-secondary me-1"></i>
-                {{ (sol as any).quantidadeConvidados }} conf.
+                {{ sol.quantidadeConvidados }} conf.
               </span>
             </td>
             <td>
               <span class="badge rounded-pill" [ngClass]="{
-                'bg-warning text-dark': (sol as any).statusOrcamento === 'PENDENTE',
-                'bg-success': (sol as any).statusOrcamento === 'APROVADO',
-                'bg-danger': (sol as any).statusOrcamento === 'REJEITADO',
-                'bg-secondary': (sol as any).statusOrcamento === 'CANCELADO'
+                'bg-warning text-dark': sol.statusOrcamento === 'PENDENTE',
+                'bg-success': sol.statusOrcamento === 'APROVADO',
+                'bg-danger': sol.statusOrcamento === 'REJEITADO',
+                'bg-secondary': sol.statusOrcamento === 'CANCELADO'
               }">
                 <i class="fas me-1" [ngClass]="{
-                  'fa-clock': (sol as any).statusOrcamento === 'PENDENTE',
-                  'fa-check-double': (sol as any).statusOrcamento === 'APROVADO',
-                  'fa-times': (sol as any).statusOrcamento === 'REJEITADO',
-                  'fa-ban': (sol as any).statusOrcamento === 'CANCELADO'
+                  'fa-clock': sol.statusOrcamento === 'PENDENTE',
+                  'fa-check-double': sol.statusOrcamento === 'APROVADO',
+                  'fa-times': sol.statusOrcamento === 'REJEITADO',
+                  'fa-ban': sol.statusOrcamento === 'CANCELADO'
                 }"></i>
-                {{ (sol as any).statusOrcamento }}
+                {{ sol.statusOrcamento }}
               </span>
             </td>
             <td class="text-end pe-4">

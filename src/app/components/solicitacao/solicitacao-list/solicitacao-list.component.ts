@@ -74,7 +74,7 @@ export class SolicitacaoListComponent implements OnInit {
 
     // Filtro por status
     if (this.filtroStatus !== 'todos') {
-      filtradas = filtradas.filter(s => (s as any).statusOrcamento === this.filtroStatus);
+      filtradas = filtradas.filter(s => s.statusOrcamento === this.filtroStatus);
     }
 
     // Ordenação

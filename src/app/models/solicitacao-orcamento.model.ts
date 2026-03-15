@@ -3,20 +3,21 @@ export interface SolicitacaoOrcamento {
   cliente: Cliente;
   tipoEvento: TipoEvento;
   temaFesta?: TemaFesta;
-  dataEvento: Date;
-  numeroConvidados: number;
+  temas?: TemaFesta[];
+  dataEvento: Date | string;
+  quantidadeConvidados: number;
   observacoes?: string;
-  status: 'PENDENTE' | 'APROVADO' | 'REJEITADO' | 'CANCELADO';
+  statusOrcamento: 'PENDENTE' | 'APROVADO' | 'REJEITADO' | 'CANCELADO';
   valorEstimado?: number;
-  dataSolicitacao?: Date;
+  dataCriacao?: Date | string;
 }
 
 export interface SolicitacaoOrcamentoRequest {
-  clienteId: number;
-  tipoEventoId: number;
+  clienteId?: number;
+  tipoEventoId?: number;
   temaFestaId?: number;
   dataEvento: Date | string;
-  numeroConvidados: number;
+  numeroConvidados?: number;
   observacoes?: string;
   status?: string;
 }
@@ -24,8 +25,9 @@ export interface SolicitacaoOrcamentoRequest {
 export interface Cliente {
   id?: number;
   nome: string;
-  email: string;
-  telefone: string;
+  email?: string;
+  telefone?: string;
+  usuario?: { id?: number; login?: string };
 }
 
 export interface TipoEvento {
