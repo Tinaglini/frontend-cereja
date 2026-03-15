@@ -4,11 +4,12 @@ import { RouterModule } from '@angular/router';
 import { NavbarComponent } from '../../shared/navbar/navbar.component';
 import { ToastComponent } from '../../shared/toast/toast.component';
 import { AuthService } from '../../services/auth.service';
+import { LogoComponent } from '../../shared/components/logo/logo.component';
 
 @Component({
   selector: 'app-customer-layout',
   standalone: true,
-  imports: [CommonModule, RouterModule, NavbarComponent, ToastComponent],
+  imports: [CommonModule, RouterModule, NavbarComponent, ToastComponent, LogoComponent],
   templateUrl: './customer-layout.component.html',
   styleUrl: './customer-layout.component.scss'
 })

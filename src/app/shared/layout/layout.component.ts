@@ -3,10 +3,11 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, RouterOutlet } from '@angular/router';
 import { NavbarComponent } from '../navbar/navbar.component';
 import { ToastComponent } from '../toast/toast.component';
+import { LogoComponent } from '../components/logo/logo.component';
 
 @Component({
   selector: 'app-layout',
-  imports: [CommonModule, RouterModule, NavbarComponent, ToastComponent],
+  imports: [CommonModule, RouterModule, NavbarComponent, ToastComponent, LogoComponent],
   templateUrl: './layout.component.html',
   styleUrl: './layout.component.scss'
 })

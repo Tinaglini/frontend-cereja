@@ -7,10 +7,11 @@ import { FormsModule } from '@angular/forms';
 import Swal from 'sweetalert2';
 import { AuthService } from '../../services/auth.service';
 import { LoginRequest } from '../../models/usuario.model';
+import { LogoComponent } from '../../shared/components/logo/logo.component';
 
 @Component({
   selector: 'app-login',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, LogoComponent],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
