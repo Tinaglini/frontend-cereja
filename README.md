@@ -1,59 +1,157 @@
-# FestaFrontend
+# 🍒 Tia Cereja — Sistema de Festas (Frontend)
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.15.
+![Angular](https://img.shields.io/badge/Angular-19.2-dd0031?style=flat-square&logo=angular&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.7-3178c6?style=flat-square&logo=typescript&logoColor=white)
+![Bootstrap](https://img.shields.io/badge/Bootstrap-5.3-7952b3?style=flat-square&logo=bootstrap&logoColor=white)
 
-## Development server
+Sistema web completo para gerenciamento de eventos e orçamentos de festas. Permite que clientes solicitem orçamentos online e que administradores gerenciem solicitações, tipos de eventos, temas e clientes.
 
-To start a local development server, run:
+---
+
+## 📋 Pré-requisitos
+
+| Requisito | Versão |
+|---|---|
+| Node.js | 18+ |
+| Angular CLI | 19.x (`npm install -g @angular/cli`) |
+| Backend (Spring Boot) | Rodando em `http://localhost:8080` |
+
+---
+
+## 🚀 Instalação e execução
 
 ```bash
+# 1. Instale as dependências
+npm install
+
+# 2. Inicie o servidor de desenvolvimento (porta 4200)
 ng serve
+# ou
+npm start
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Acesse em: **http://localhost:4200**
 
-## Code scaffolding
+---
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+## ⚙️ Variáveis de ambiente
 
-```bash
-ng generate component component-name
+Configure a URL base da API em `src/environments/`:
+
+```typescript
+// src/environments/environment.ts
+export const environment = {
+  production: false,
+  SERVIDOR: 'http://localhost:8080'
+};
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+Para produção, edite `src/environments/environment.prod.ts` com a URL do servidor de produção.
 
-```bash
-ng generate --help
-```
+---
 
-## Building
+## 🔧 Scripts disponíveis
 
-To build the project run:
+| Script | Comando | Descrição |
+|---|---|---|
+| `start` | `ng serve` | Desenvolvimento com live reload |
+| `build` | `ng build` | Build de produção em `dist/` |
+| `watch` | `ng build --watch` | Build contínuo (observa alterações) |
+| `test` | `ng test` | Testes unitários via Karma |
+
+### Build de produção
 
 ```bash
 ng build
+# Artefatos gerados em: dist/festa-frontend/
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+---
 
-## Running unit tests
+## 🏗️ Arquitetura
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
+```
+src/app/
+├── auth/login/        # Tela de login e modal de cadastro
+├── components/        # Componentes administrativos (CRUD)
+│   ├── cliente/
+│   ├── solicitacao/
+│   ├── tema/
+│   └── tipo-evento/
+├── customer/          # Área do cliente (portal)
+│   ├── orcamentos/    # Solicitar e listar orçamentos
+│   └── perfil/        # Perfil do usuário
+├── dashboard/         # Painel inicial do administrador
+├── guards/            # Proteção de rotas por role
+├── interceptors/      # JWT interceptor (injeta token no header)
+├── models/            # Interfaces e tipos TypeScript
+├── services/          # Serviços HTTP
+│   ├── auth.service.ts
+│   ├── cliente.service.ts
+│   ├── solicitacao.service.ts
+│   ├── tipo-evento.service.ts
+│   └── tema-festa.service.ts
+└── shared/            # Recursos compartilhados (LogoComponent, etc.)
 ```
 
-## Running end-to-end tests
+### Descrição das pastas
 
-For end-to-end (e2e) testing, run:
+| Pasta | Responsabilidade |
+|---|---|
+| `auth/` | Login com JWT, cadastro de usuários, redirecionamento por role |
+| `components/` | Páginas e formulários da área administrativa (ROLE_ADMIN) |
+| `customer/` | Portal do cliente — solicitar orçamentos, acompanhar status |
+| `dashboard/` | Página inicial do admin com visão geral do sistema |
+| `guards/` | `AdminGuard` e `CustomerGuard` — controle de acesso por role |
+| `interceptors/` | `AuthInterceptor` — adiciona `Authorization: Bearer <token>` em todas as chamadas à API |
+| `models/` | Interfaces TypeScript espelhando as entidades do backend |
+| `services/` | Camada de comunicação HTTP com o backend |
+| `shared/` | Componentes e utilitários reutilizáveis entre módulos |
 
-```bash
-ng e2e
+---
+
+## 🔐 Fluxo de Autenticação
+
+```
+Login (POST /api/auth/login)
+  └─► JWT recebido → salvo em localStorage
+        └─► AuthInterceptor injeta token em todas as requisições
+              └─► Guards verificam ROLE no JWT antes de ativar rotas
+                    ├─► ROLE_ADMIN → /dashboard
+                    └─► ROLE_USER  → /meus-orcamentos
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+O token JWT é decodificado no frontend via `atob()` para extrair role e ID do usuário — sem dependência de bibliotecas externas.
 
-## Additional Resources
+---
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+## 🌐 CORS
+
+Para que o frontend se comunique com o backend Spring Boot, é necessário configurar o CORS no servidor.
+
+Consulte o arquivo **`CORS_CONFIG.md`** na raiz do projeto com as instruções completas para configurar o `WebMvcConfigurer` no Spring Boot.
+
+---
+
+## 🛠 Stack
+
+| Tecnologia | Uso |
+|---|---|
+| Angular 19.2 | Framework principal (Standalone Components) |
+| TypeScript 5.7 | Tipagem estática |
+| SCSS | Estilos com variáveis e design system próprio |
+| Bootstrap 5.3 | Grid e componentes base |
+| MDB Angular UI Kit 8 | Componentes UI extras |
+| SweetAlert2 | Alertas e confirmações |
+| Angular HTTP + Interceptors | Comunicação com API REST |
+
+---
+
+## 🍒 Sobre o projeto
+
+**Tia Cereja** é um sistema de gestão de festas e eventos com duas áreas distintas:
+
+- **Área Administrativa** — gerenciamento completo de solicitações, clientes, tipos de evento e temas
+- **Área do Cliente** — portal onde o cliente solicita orçamentos e acompanha o status dos pedidos
+
+O backend é desenvolvido em **Spring Boot** e expõe uma API REST consumida por este frontend.
