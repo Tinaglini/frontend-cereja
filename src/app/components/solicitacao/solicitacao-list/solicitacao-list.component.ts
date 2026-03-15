@@ -40,11 +40,22 @@ export class SolicitacaoListComponent implements OnInit {
       error: (erro) => {
         console.error('Erro ao buscar solicitações:', erro);
         this.loading = false;
-        Swal.fire({
-          icon: 'error',
-          title: 'Erro',
-          text: 'Não foi possível carregar as solicitações de orçamento.'
-        });
+
+        if (erro.status === 403) {
+          Swal.fire({
+            icon: 'warning',
+            title: 'Sessão desatualizada',
+            text: 'Seu token JWT não possui as permissões necessárias. Por favor, faça logout e login novamente para atualizar suas credenciais.',
+            confirmButtonText: 'Entendido',
+            confirmButtonColor: '#DB2777'
+          });
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Erro',
+            text: 'Não foi possível carregar as solicitações de orçamento.'
+          });
+        }
       }
     });
   }
@@ -63,7 +74,7 @@ export class SolicitacaoListComponent implements OnInit {
 
     // Filtro por status
     if (this.filtroStatus !== 'todos') {
-      filtradas = filtradas.filter(s => s.status === this.filtroStatus);
+      filtradas = filtradas.filter(s => (s as any).statusOrcamento === this.filtroStatus);
     }
 
     // Ordenação
