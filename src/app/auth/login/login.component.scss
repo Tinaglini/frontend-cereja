@@ -147,4 +147,24 @@
   padding: 0.9rem;
   font-size: 1.05rem;
   letter-spacing: 0.5px;
+  position: relative;
+  overflow: hidden;
+  transition: color 0.3s ease;
+  z-index: 0;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.15);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
+    z-index: -1;
+  }
+
+  &:hover::after {
+    transform: scaleX(1);
+  }
 }
+
