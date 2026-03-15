@@ -60,8 +60,8 @@ export class SolicitarOrcamentoComponent implements OnInit {
   }
 
   carregarDadosIniciais() {
-    this.tipoEventoService.buscarTodos().subscribe((res: any[]) => {
-      this.tiposEvento = res.filter((te: any) => te.ativo);
+    this.tipoEventoService.buscarAtivos().subscribe((res: TipoEvento[]) => {
+      this.tiposEvento = res;
       this.temaService.buscarTodos().subscribe((resTemas: any[]) => {
          this.temas = resTemas.filter((t: any) => t.ativo);
          this.loadingData = false;
