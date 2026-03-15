@@ -36,6 +36,8 @@ export class LoginComponent {
   loading = false;
   registrando = false;
   emailJaCadastrado = false;
+  showPassword = false;
+  showRegPassword = false;
 
   private modalInstance: any;
 

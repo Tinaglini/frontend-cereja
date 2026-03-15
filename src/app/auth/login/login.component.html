@@ -1,88 +1,128 @@
-<div class="login-container fade-in">
-  <div class="login-overlay"></div>
-  
-  <div class="login-wrapper">
-    <!-- Lado Esquerdo: Branding/Imagem -->
-    <div class="login-brand-side d-none d-lg-flex">
-      <div class="brand-content fade-in-down">
-        <div class="logo-wrapper mb-4 d-flex justify-content-center">
-          <app-logo [size]="140"></app-logo>
+<div class="login-root">
+
+  <!-- ===========================
+       BRAND PANEL (Left, desktop)
+       =========================== -->
+  <div class="brand-panel d-none d-lg-flex">
+    <!-- Decorative blobs -->
+    <div class="brand-blob brand-blob--1"></div>
+    <div class="brand-blob brand-blob--2"></div>
+    <div class="brand-blob brand-blob--3"></div>
+
+    <div class="brand-body">
+      <app-logo [size]="120" class="mb-5 d-block"></app-logo>
+      <h1 class="brand-name">Tia Cereja</h1>
+      <p class="brand-tagline">Elegância e organização<br>para eventos inesquecíveis.</p>
+
+      <div class="brand-features mt-5">
+        <div class="feature-pill">
+          <i class="fas fa-calendar-check me-2"></i> Gestão de Eventos
         </div>
-        <h1 class="brand-title">Tia Cereja</h1>
-        <p class="brand-subtitle">Elegância e organização para eventos inesquecíveis.</p>
+        <div class="feature-pill">
+          <i class="fas fa-palette me-2"></i> Temas Personalizados
+        </div>
+        <div class="feature-pill">
+          <i class="fas fa-file-invoice-dollar me-2"></i> Orçamentos Online
+        </div>
       </div>
     </div>
+  </div>
 
-    <!-- Lado Direito: Formulário -->
-    <div class="login-form-side">
-      <div class="login-card scale-up">
-        
-        <div class="login-header text-center d-lg-none mb-4">
-          <app-logo [size]="80" class="mb-2 d-inline-block"></app-logo>
-          <h2 class="login-title-mobile">Tia Cereja</h2>
-        </div>
+  <!-- ===========================
+       FORM PANEL (Right)
+       =========================== -->
+  <div class="form-panel">
+    <div class="form-card">
 
-        <div class="form-header mb-4">
-          <h3 class="fw-bold text-dark">Bem-vindo</h3>
-          <p class="text-muted">Faça login para gerenciar o sistema</p>
-        </div>
-        
-        <form class="login-form" (ngSubmit)="login()" #loginForm="ngForm">
-          <!-- Floating Label MDB/Bootstrap 5 -->
-          <div class="form-floating mb-4">
-            <input 
-              type="email" 
-              class="form-control" 
-              id="email" 
-              [(ngModel)]="credentials.login" 
+      <!-- Logo (mobile only) -->
+      <div class="d-flex d-lg-none justify-content-center mb-5">
+        <app-logo [size]="72"></app-logo>
+      </div>
+
+      <!-- Header -->
+      <div class="form-heading mb-6">
+        <h2 class="form-title">Entrar na conta</h2>
+        <p class="form-subtitle">Bem-vindo de volta! Preencha seus dados.</p>
+      </div>
+
+      <!-- Login form -->
+      <form (ngSubmit)="login()" #loginForm="ngForm" novalidate autocomplete="on">
+
+        <!-- Email field -->
+        <div class="field-group mb-4" [class.field-error]="emailField.touched && emailField.invalid">
+          <label class="field-label" for="email">E-mail</label>
+          <div class="field-input-wrapper">
+            <i class="fas fa-envelope field-icon"></i>
+            <input
+              type="email"
+              class="field-input"
+              id="email"
               name="login"
+              [(ngModel)]="credentials.login"
+              #emailField="ngModel"
               required
               email
-              placeholder="nome@exemplo.com">
-            <label for="email"><i class="fas fa-envelope me-2 text-muted"></i>Email</label>
+              placeholder="seu@email.com"
+              autocomplete="email">
           </div>
-          
-          <div class="form-floating mb-4">
-            <input 
-              type="password" 
-              class="form-control" 
-              id="senha" 
-              [(ngModel)]="credentials.senha" 
-              name="senha"
-              required
-              placeholder="Senha">
-            <label for="senha"><i class="fas fa-lock me-2 text-muted"></i>Senha</label>
-          </div>
-          
-          <button 
-            type="submit" 
-            class="btn btn-primary btn-login w-100 mt-2"
-            [disabled]="loginForm.invalid || loading">
-            <span *ngIf="!loading">
-              Acessar Sistema <i class="fas fa-arrow-right ms-2"></i>
-            </span>
-            <span *ngIf="loading">
-              <i class="fas fa-spinner fa-spin me-2"></i> Entrando...
-            </span>
-          </button>
-        </form>
+          <span class="field-hint" *ngIf="emailField.touched && emailField.invalid">
+            <i class="fas fa-exclamation-circle me-1"></i>Informe um e-mail válido.
+          </span>
+        </div>
 
-        <!-- Link para criar conta -->
-        <div class="text-center mt-4">
-          <p class="text-muted small mb-0">
-            Novo por aqui?
-            <button type="button" class="btn btn-link btn-sm p-0 ms-1 fw-bold text-primary text-decoration-none" (click)="abrirModalCadastro()">
-              Criar conta
+        <!-- Senha field -->
+        <div class="field-group mb-5" [class.field-error]="senhaField.touched && senhaField.invalid">
+          <label class="field-label" for="senha">Senha</label>
+          <div class="field-input-wrapper">
+            <i class="fas fa-lock field-icon"></i>
+            <input
+              [type]="showPassword ? 'text' : 'password'"
+              class="field-input field-input--password"
+              id="senha"
+              name="senha"
+              [(ngModel)]="credentials.senha"
+              #senhaField="ngModel"
+              required
+              placeholder="••••••••"
+              autocomplete="current-password">
+            <button type="button" class="toggle-password" (click)="showPassword = !showPassword" tabindex="-1" aria-label="Mostrar/ocultar senha">
+              <i class="fas" [class.fa-eye]="!showPassword" [class.fa-eye-slash]="showPassword"></i>
             </button>
-          </p>
+          </div>
+          <span class="field-hint" *ngIf="senhaField.touched && senhaField.invalid">
+            <i class="fas fa-exclamation-circle me-1"></i>Informe a senha.
+          </span>
         </div>
-        
-        <div class="login-footer text-center mt-4">
-          <p class="text-muted small">
-            &copy; 2026 Tia Cereja. Todos os direitos reservados.
-          </p>
-        </div>
+
+        <!-- Submit button -->
+        <button
+          type="submit"
+          class="btn-submit w-100"
+          [disabled]="loginForm.invalid || loading">
+          <span *ngIf="!loading">
+            Entrar <i class="fas fa-arrow-right ms-2"></i>
+          </span>
+          <span *ngIf="loading" class="d-flex align-items-center justify-content-center gap-2">
+            <span class="spinner-border spinner-border-sm" role="status"></span>
+            Entrando...
+          </span>
+        </button>
+
+      </form>
+
+      <!-- Divider -->
+      <div class="divider my-4">
+        <span>ou</span>
       </div>
+
+      <!-- Create account + forgot password links -->
+      <div class="d-flex flex-column align-items-center gap-2">
+        <button type="button" class="link-action" (click)="abrirModalCadastro()">
+          <i class="fas fa-user-plus me-2"></i>Criar uma conta
+        </button>
+        <p class="text-muted small mb-0 mt-1">&copy; 2026 Tia Cereja. Todos os direitos reservados.</p>
+      </div>
+
     </div>
   </div>
 </div>
@@ -92,7 +132,7 @@
      ============================ -->
 <div class="modal fade" id="modalCadastro" tabindex="-1" aria-labelledby="modalCadastroLabel" aria-hidden="true" #modalCadastroEl>
   <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content rounded-4 shadow-lg border-0">
+    <div class="modal-content modal-card">
       
       <!-- Header -->
       <div class="modal-header border-0 pb-0 px-4 pt-4">
@@ -107,81 +147,68 @@
 
       <!-- Body -->
       <div class="modal-body px-4 py-3">
-        <form #cadastroForm="ngForm" (ngSubmit)="registrar(cadastroForm)">
+        <form #cadastroForm="ngForm" (ngSubmit)="registrar(cadastroForm)" novalidate>
 
           <!-- Nome -->
-          <div class="form-floating mb-3">
-            <input
-              type="text"
-              class="form-control"
-              id="regNome"
-              name="nome"
-              [(ngModel)]="cadastro.nome"
-              required
-              placeholder="Seu nome completo">
-            <label for="regNome"><i class="fas fa-user me-2 text-muted"></i>Nome *</label>
+          <div class="field-group mb-3">
+            <label class="field-label" for="regNome">Nome completo</label>
+            <div class="field-input-wrapper">
+              <i class="fas fa-user field-icon"></i>
+              <input type="text" class="field-input" id="regNome" name="nome"
+                [(ngModel)]="cadastro.nome" required placeholder="Seu nome">
+            </div>
           </div>
 
           <!-- Email -->
-          <div class="form-floating mb-3">
-            <input
-              type="email"
-              class="form-control"
-              id="regEmail"
-              name="email"
-              [(ngModel)]="cadastro.email"
-              required
-              email
-              placeholder="email@exemplo.com"
-              [class.is-invalid]="emailJaCadastrado">
-            <label for="regEmail"><i class="fas fa-envelope me-2 text-muted"></i>Email *</label>
-            <div class="invalid-feedback" *ngIf="emailJaCadastrado">
-              Este e-mail já está cadastrado. Tente fazer login.
+          <div class="field-group mb-3" [class.field-error]="emailJaCadastrado">
+            <label class="field-label" for="regEmail">E-mail</label>
+            <div class="field-input-wrapper">
+              <i class="fas fa-envelope field-icon"></i>
+              <input type="email" class="field-input" id="regEmail" name="email"
+                [(ngModel)]="cadastro.email" required email placeholder="seu@email.com"
+                (input)="emailJaCadastrado = false">
             </div>
+            <span class="field-hint" *ngIf="emailJaCadastrado">
+              <i class="fas fa-exclamation-circle me-1"></i>Este e-mail já está cadastrado. Faça login.
+            </span>
           </div>
 
           <!-- Senha -->
-          <div class="form-floating mb-3">
-            <input
-              type="password"
-              class="form-control"
-              id="regSenha"
-              name="senha"
-              [(ngModel)]="cadastro.senha"
-              required
-              minlength="6"
-              placeholder="Mínimo 6 caracteres"
-              #senhaInput="ngModel">
-            <label for="regSenha"><i class="fas fa-lock me-2 text-muted"></i>Senha * (mín. 6 caracteres)</label>
-            <div class="invalid-feedback d-block" *ngIf="senhaInput.invalid && senhaInput.touched">
-              A senha deve ter pelo menos 6 caracteres.
+          <div class="field-group mb-3">
+            <label class="field-label" for="regSenha">Senha</label>
+            <div class="field-input-wrapper">
+              <i class="fas fa-lock field-icon"></i>
+              <input [type]="showRegPassword ? 'text' : 'password'" class="field-input field-input--password"
+                id="regSenha" name="senha" [(ngModel)]="cadastro.senha" required minlength="6"
+                #regSenhaInput="ngModel" placeholder="Mínimo 6 caracteres">
+              <button type="button" class="toggle-password" (click)="showRegPassword = !showRegPassword" tabindex="-1">
+                <i class="fas" [class.fa-eye]="!showRegPassword" [class.fa-eye-slash]="showRegPassword"></i>
+              </button>
             </div>
+            <span class="field-hint" *ngIf="regSenhaInput.touched && regSenhaInput.invalid">
+              <i class="fas fa-exclamation-circle me-1"></i>Mínimo 6 caracteres.
+            </span>
           </div>
 
           <!-- Confirmar Senha -->
-          <div class="form-floating mb-4">
-            <input
-              type="password"
-              class="form-control"
-              id="regConfirmarSenha"
-              name="confirmarSenha"
-              [(ngModel)]="cadastro.confirmarSenha"
-              required
-              placeholder="Repita a senha"
-              [class.is-invalid]="cadastro.confirmarSenha && cadastro.confirmarSenha !== cadastro.senha">
-            <label for="regConfirmarSenha"><i class="fas fa-lock me-2 text-muted"></i>Confirmar Senha *</label>
-            <div class="invalid-feedback" *ngIf="cadastro.confirmarSenha && cadastro.confirmarSenha !== cadastro.senha">
-              As senhas não coincidem.
+          <div class="field-group mb-4" [class.field-error]="cadastro.confirmarSenha && cadastro.confirmarSenha !== cadastro.senha">
+            <label class="field-label" for="regConfirmarSenha">Confirmar senha</label>
+            <div class="field-input-wrapper">
+              <i class="fas fa-lock field-icon"></i>
+              <input type="password" class="field-input" id="regConfirmarSenha" name="confirmarSenha"
+                [(ngModel)]="cadastro.confirmarSenha" required placeholder="Repita a senha">
             </div>
+            <span class="field-hint" *ngIf="cadastro.confirmarSenha && cadastro.confirmarSenha !== cadastro.senha">
+              <i class="fas fa-exclamation-circle me-1"></i>As senhas não coincidem.
+            </span>
           </div>
 
-          <!-- Botão -->
-          <button
-            type="submit"
-            class="btn btn-primary w-100 py-3 fw-bold"
+          <button type="submit" class="btn-submit w-100"
             [disabled]="cadastroForm.invalid || cadastro.confirmarSenha !== cadastro.senha || registrando">
-            <span *ngIf="!registrando"><i class="fas fa-user-check me-2"></i> Criar Conta</span>
-            <span *ngIf="registrando"><i class="fas fa-spinner fa-spin me-2"></i> Cadastrando...</span>
+            <span *ngIf="!registrando"><i class="fas fa-user-check me-2"></i>Criar Conta</span>
+            <span *ngIf="registrando" class="d-flex align-items-center justify-content-center gap-2">
+              <span class="spinner-border spinner-border-sm"></span> Cadastrando...
+            </span>
           </button>
 
         </form>
@@ -191,12 +218,9 @@
       <div class="modal-footer border-0 pt-0 pb-4 px-4 text-center d-block">
         <p class="text-muted small mb-0">
           Já tem uma conta?
-          <button type="button" class="btn btn-link btn-sm p-0 ms-1 text-primary fw-bold text-decoration-none" data-bs-dismiss="modal">
-            Fazer login
-          </button>
+          <button type="button" class="link-action ms-1" data-bs-dismiss="modal">Fazer login</button>
         </p>
       </div>
-
     </div>
   </div>
 </div>
