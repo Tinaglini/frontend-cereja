@@ -93,13 +93,8 @@ export class TipoEventoListComponent implements OnInit {
 
   toggleStatus(tipo: TipoEvento): void {
     if (!tipo.id) return;
-    
-    const novoStatus = !tipo.ativo;
-    // Tipamos como 'any' pois TypeScript às vezes reclama de exclusão de campos opicionais no spread
-    const atualizacao = { ...tipo, ativo: novoStatus };
-    delete atualizacao.id;
 
-    this.tipoEventoService.atualizar(tipo.id, atualizacao as any).subscribe({
+    this.tipoEventoService.toggleStatus(tipo.id).subscribe({
       next: (atualizado) => {
         const index = this.tiposEvento.findIndex(t => t.id === atualizado.id);
         if (index !== -1) {

@@ -74,8 +74,7 @@ export class TipoEventoFormComponent implements OnInit {
       descricao: this.tipoEvento.descricao,
       capacidadeMinima: this.tipoEvento.capacidadeMinima,
       capacidadeMaxima: this.tipoEvento.capacidadeMaxima,
-      duracaoMedia: this.tipoEvento.duracaoMedia,
-      ativo: this.tipoEvento.ativo
+      duracaoMedia: this.tipoEvento.duracaoMedia
     };
 
     const operacao = this.isEdit && this.id 

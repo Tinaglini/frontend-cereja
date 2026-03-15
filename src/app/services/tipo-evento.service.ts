@@ -37,6 +37,15 @@ export class TipoEventoService {
     return this.http.get<TipoEvento[]>(this.API + '/buscar' + params);
   }
 
+
+  buscarAtivos(): Observable<TipoEvento[]> {
+    return this.http.get<TipoEvento[]>(this.API + '/ativos');
+  }
+
+  toggleStatus(id: number): Observable<TipoEvento> {
+    return this.http.patch<TipoEvento>(`${this.API}/${id}/status`, {});
+  }
+
   buscarPorCapacidade(capacidade: number): Observable<TipoEvento[]> {
     return this.http.get<TipoEvento[]>(this.API + '/capacidade/' + capacidade);
   }

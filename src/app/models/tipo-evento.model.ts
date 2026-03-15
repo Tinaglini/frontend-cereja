@@ -14,5 +14,4 @@ export interface TipoEventoRequest {
   capacidadeMinima: number;
   capacidadeMaxima: number;
   duracaoMedia: number;
-  ativo: boolean;
 }
