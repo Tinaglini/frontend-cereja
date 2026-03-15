@@ -22,18 +22,33 @@ import { AuthService } from '../../../services/auth.service';
 export class SolicitarOrcamentoComponent implements OnInit {
   
   step = 1;
-  maxSteps = 4;
+  maxSteps = 5;   // ← agora 5 passos (incluindo endereco)
   loadingData = true;
   submitting = false;
 
   tiposEvento: TipoEvento[] = [];
   temas: TemaFesta[] = [];
 
-  // Campos do formulário
+  // Passo 1 — Tipo de Evento
   tipoEventoId: number = 0;
-  temaFestaId: number | undefined = undefined;
+
+  // Passo 2 — Data e Público
   dataEvento: string = '';
   numeroConvidados: number = 50;
+
+  // Passo 3 — Endereço do Evento
+  endereco = {
+    rua: '',
+    numero: '',
+    complemento: '',
+    bairro: '',
+    cidade: '',
+    estado: '',
+    cep: ''
+  };
+
+  // Passo 4 — Tema e Detalhes
+  temaFestaId: number | undefined = undefined;
   observacoes: string = '';
 
   // ID do usuário logado (extraído do JWT)
@@ -71,6 +86,14 @@ export class SolicitarOrcamentoComponent implements OnInit {
       Swal.fire('Atenção', 'Informe a data do evento e o número de convidados.', 'warning');
       return;
     }
+    if (this.step === 3) {
+      const end = this.endereco;
+      if (!end.rua?.trim() || !end.numero?.trim() || !end.bairro?.trim() ||
+          !end.cidade?.trim() || !end.estado?.trim() || !end.cep?.trim()) {
+        Swal.fire('Atenção', 'Preencha todos os campos obrigatórios do endereço (Rua, Número, Bairro, Cidade, Estado e CEP).', 'warning');
+        return;
+      }
+    }
     
     if (this.step < this.maxSteps) {
       this.step++;
@@ -95,15 +118,8 @@ export class SolicitarOrcamentoComponent implements OnInit {
     }
   }
 
-  // Getter para compatibilidade com o template HTML existente
-  get solicitacao() {
-    return {
-      tipoEventoId: this.tipoEventoId,
-      temaFestaId: this.temaFestaId,
-      dataEvento: this.dataEvento,
-      numeroConvidados: this.numeroConvidados,
-      observacoes: this.observacoes
-    };
+  removerTema() {
+    this.temaFestaId = undefined;
   }
 
   getTipoNome(): string {
@@ -117,22 +133,28 @@ export class SolicitarOrcamentoComponent implements OnInit {
     return t ? t.nome : '';
   }
 
+  getEnderecoResumido(): string {
+    const e = this.endereco;
+    if (!e.rua) return 'Não informado';
+    return `${e.rua}, ${e.numero}${e.complemento ? ' ' + e.complemento : ''} — ${e.bairro}, ${e.cidade}/${e.estado}`;
+  }
+
   enviarSolicitacao() {
     this.submitting = true;
     
-    // Body no formato que o backend espera (objetos aninhados)
+    // Body no formato exato que o backend exige
     const body: any = {
       dataEvento: this.dataEvento,
       quantidadeConvidados: this.numeroConvidados,
       tipoEvento: { id: this.tipoEventoId },
-      temas: this.temaFestaId ? [{ id: this.temaFestaId }] : []
+      temas: this.temaFestaId ? [{ id: this.temaFestaId }] : [],
+      endereco: { ...this.endereco }
     };
 
-    if (this.observacoes) {
+    if (this.observacoes?.trim()) {
       body.observacoes = this.observacoes;
     }
 
-    // Inclui o cliente com ID do usuário logado se disponível
     if (this.usuarioId) {
       body.cliente = { id: this.usuarioId };
     }
@@ -150,9 +172,11 @@ export class SolicitarOrcamentoComponent implements OnInit {
         });
       },
       error: (err: any) => {
-        console.error(err);
+        console.error('Erro ao salvar solicitação:', err);
+        console.error('Detalhes:', err.error);
         this.submitting = false;
-        Swal.fire('Ops!', 'Ocorreu um erro ao enviar sua solicitação. Tente novamente.', 'error');
+        const msg = err.error?.erro || err.error?.message || 'Ocorreu um erro ao enviar sua solicitação. Tente novamente.';
+        Swal.fire('Ops!', msg, 'error');
       }
     });
   }

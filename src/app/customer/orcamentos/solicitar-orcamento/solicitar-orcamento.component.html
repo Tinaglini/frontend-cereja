@@ -36,14 +36,21 @@
       <div class="step-item text-center flex-fill position-relative" style="z-index: 1;">
          <div class="step-circle mx-auto d-flex align-items-center justify-content-center text-white fw-bold shadow-sm"
               [ngClass]="step >= 3 ? 'bg-primary' : 'bg-secondary'">3</div>
-         <span class="d-block mt-2 small fw-medium" [ngClass]="step >= 3 ? 'text-primary' : 'text-muted'">Tema / Detalhes</span>
+         <span class="d-block mt-2 small fw-medium" [ngClass]="step >= 3 ? 'text-primary' : 'text-muted'">Endereço</span>
       </div>
 
       <!-- Passo 4 -->
       <div class="step-item text-center flex-fill position-relative" style="z-index: 1;">
          <div class="step-circle mx-auto d-flex align-items-center justify-content-center text-white fw-bold shadow-sm"
               [ngClass]="step >= 4 ? 'bg-primary' : 'bg-secondary'">4</div>
-         <span class="d-block mt-2 small fw-medium" [ngClass]="step >= 4 ? 'text-primary' : 'text-muted'">Revisão</span>
+         <span class="d-block mt-2 small fw-medium" [ngClass]="step >= 4 ? 'text-primary' : 'text-muted'">Tema / Detalhes</span>
+      </div>
+
+      <!-- Passo 5 -->
+      <div class="step-item text-center flex-fill position-relative" style="z-index: 1;">
+         <div class="step-circle mx-auto d-flex align-items-center justify-content-center text-white fw-bold shadow-sm"
+              [ngClass]="step >= 5 ? 'bg-primary' : 'bg-secondary'">5</div>
+         <span class="d-block mt-2 small fw-medium" [ngClass]="step >= 5 ? 'text-primary' : 'text-muted'">Revisão</span>
       </div>
     </div>
   </div>
@@ -64,8 +71,8 @@
          <div class="row g-4 justify-content-center">
             <div class="col-md-4 col-sm-6" *ngFor="let tipo of tiposEvento">
                <div class="card h-100 cursor-pointer border-2 transition-all option-card"
-                    [class.border-primary]="solicitacao.tipoEventoId === tipo.id"
-                    [class.bg-primary-soft]="solicitacao.tipoEventoId === tipo.id"
+                    [class.border-primary]="tipoEventoId === tipo.id"
+                    [class.bg-primary-soft]="tipoEventoId === tipo.id"
                     (click)="selecionarTipo(tipo.id)">
                   <div class="card-body text-center p-4">
                      <div class="icon-circle mx-auto mb-3 text-primary d-flex align-items-center justify-content-center"
@@ -76,7 +83,7 @@
                      <p class="small text-muted mb-0">Capacidade max: {{ tipo.capacidadeMaxima }} convidados</p>
                   </div>
                   
-                  <div class="check-indicator position-absolute top-0 end-0 mt-2 me-2 text-primary" *ngIf="solicitacao.tipoEventoId === tipo.id">
+                  <div class="check-indicator position-absolute top-0 end-0 mt-2 me-2 text-primary" *ngIf="tipoEventoId === tipo.id">
                       <i class="fas fa-check-circle fs-5"></i>
                   </div>
                </div>
@@ -110,13 +117,88 @@
           </div>
       </div>
 
-      <!-- PASSO 3: TEMA E DETALHES -->
+      <!-- PASSO 3: ENDEREÇO DO EVENTO -->
       <div class="step-pane fade-in" *ngIf="step === 3">
+          <h4 class="fw-bold text-dark mb-4 text-center">Onde será a festa?</h4>
+          <p class="text-muted text-center mb-4">Informe o endereço onde o evento acontecerá.</p>
+          
+          <div class="row justify-content-center">
+            <div class="col-md-10">
+              <div class="row g-3">
+                
+                <div class="col-md-6">
+                  <div class="form-floating">
+                    <input type="text" class="form-control" id="endRua" [(ngModel)]="endereco.rua" placeholder="Rua">
+                    <label for="endRua"><i class="fas fa-road me-2 text-muted"></i>Rua / Avenida *</label>
+                  </div>
+                </div>
+
+                <div class="col-md-3">
+                  <div class="form-floating">
+                    <input type="text" class="form-control" id="endNumero" [(ngModel)]="endereco.numero" placeholder="Número">
+                    <label for="endNumero">Número *</label>
+                  </div>
+                </div>
+
+                <div class="col-md-3">
+                  <div class="form-floating">
+                    <input type="text" class="form-control" id="endComplemento" [(ngModel)]="endereco.complemento" placeholder="Complemento">
+                    <label for="endComplemento">Complemento</label>
+                  </div>
+                </div>
+
+                <div class="col-md-4">
+                  <div class="form-floating">
+                    <input type="text" class="form-control" id="endBairro" [(ngModel)]="endereco.bairro" placeholder="Bairro">
+                    <label for="endBairro">Bairro *</label>
+                  </div>
+                </div>
+
+                <div class="col-md-4">
+                  <div class="form-floating">
+                    <input type="text" class="form-control" id="endCidade" [(ngModel)]="endereco.cidade" placeholder="Cidade">
+                    <label for="endCidade">Cidade *</label>
+                  </div>
+                </div>
+
+                <div class="col-md-2">
+                  <div class="form-floating">
+                    <select class="form-select" id="endEstado" [(ngModel)]="endereco.estado">
+                      <option value="">UF</option>
+                      <option value="AC">AC</option><option value="AL">AL</option><option value="AP">AP</option>
+                      <option value="AM">AM</option><option value="BA">BA</option><option value="CE">CE</option>
+                      <option value="DF">DF</option><option value="ES">ES</option><option value="GO">GO</option>
+                      <option value="MA">MA</option><option value="MT">MT</option><option value="MS">MS</option>
+                      <option value="MG">MG</option><option value="PA">PA</option><option value="PB">PB</option>
+                      <option value="PR">PR</option><option value="PE">PE</option><option value="PI">PI</option>
+                      <option value="RJ">RJ</option><option value="RN">RN</option><option value="RS">RS</option>
+                      <option value="RO">RO</option><option value="RR">RR</option><option value="SC">SC</option>
+                      <option value="SP">SP</option><option value="SE">SE</option><option value="TO">TO</option>
+                    </select>
+                    <label for="endEstado">Estado *</label>
+                  </div>
+                </div>
+
+                <div class="col-md-2">
+                  <div class="form-floating">
+                    <input type="text" class="form-control" id="endCep" [(ngModel)]="endereco.cep" placeholder="CEP" maxlength="9">
+                    <label for="endCep">CEP *</label>
+                  </div>
+                </div>
+
+              </div>
+              <p class="text-muted small mt-3"><i class="fas fa-info-circle me-1"></i> O endereço é obrigatório para o orçamento de transporte e montagem.</p>
+            </div>
+          </div>
+      </div>
+
+      <!-- PASSO 4: TEMA E DETALHES -->
+      <div class="step-pane fade-in" *ngIf="step === 4">
           <h4 class="fw-bold text-dark mb-4 text-center">Gostaria de algum tema específico?</h4>
           
           <div class="mb-4 text-center">
              <p class="text-muted">Selecione um dos nossos temas pré-montados ou pule esta etapa para orçar um tema personalizado.</p>
-             <button class="btn btn-sm btn-outline-secondary rounded-pill" (click)="solicitacao.temaFestaId = undefined" *ngIf="solicitacao.temaFestaId">
+             <button class="btn btn-sm btn-outline-secondary rounded-pill" (click)="removerTema()" *ngIf="temaFestaId">
                 Remover Tema Selecionado
              </button>
           </div>
@@ -126,18 +208,18 @@
             <div class="row g-3">
               <div class="col-6 col-md-4 col-lg-3" *ngFor="let tema of temas">
                   <div class="card cursor-pointer border-2 transition-all option-card text-center"
-                       [class.border-primary]="solicitacao.temaFestaId === tema.id"
+                       [class.border-primary]="temaFestaId === tema.id"
                        (click)="selecionarTema(tema.id)">
-                      <div class="card-body p-3">
-                         <div class="color-circle mx-auto mb-2 shadow-sm border" 
-                              [style.background-color]="tema.corPrincipal" 
-                              style="width: 30px; height: 30px; border-radius: 50%;"></div>
-                         <span class="d-block fw-bold small text-dark lh-sm">{{ tema.nome }}</span>
-                      </div>
-                      
-                      <div class="check-indicator position-absolute top-0 end-0 mt-1 me-1 text-primary" *ngIf="solicitacao.temaFestaId === tema.id">
-                          <i class="fas fa-check-circle"></i>
-                      </div>
+                     <div class="card-body p-3">
+                        <div class="color-circle mx-auto mb-2 shadow-sm border" 
+                             [style.background-color]="tema.corPrincipal" 
+                             style="width: 30px; height: 30px; border-radius: 50%;"></div>
+                        <span class="d-block fw-bold small text-dark lh-sm">{{ tema.nome }}</span>
+                     </div>
+                     
+                     <div class="check-indicator position-absolute top-0 end-0 mt-1 me-1 text-primary" *ngIf="temaFestaId === tema.id">
+                         <i class="fas fa-check-circle"></i>
+                     </div>
                   </div>
               </div>
             </div>
@@ -146,7 +228,7 @@
           <div class="row justify-content-center">
             <div class="col-md-8">
               <div class="form-floating">
-                <textarea class="form-control" id="observacoes" [(ngModel)]="solicitacao.observacoes" style="height: 100px"
+                <textarea class="form-control" id="observacoes" [(ngModel)]="observacoes" style="height: 100px"
                           placeholder="Ex: Quero cores neon, sem glúten..."></textarea>
                 <label for="observacoes">Mais detalhes sobre o que você deseja (Alergias, preferências, etc)</label>
               </div>
@@ -154,12 +236,12 @@
           </div>
       </div>
 
-      <!-- PASSO 4: REVISÃO E ENVIO -->
-      <div class="step-pane fade-in" *ngIf="step === 4">
+      <!-- PASSO 5: REVISÃO E ENVIO -->
+      <div class="step-pane fade-in" *ngIf="step === 5">
           <h4 class="fw-bold text-dark mb-4 text-center text-primary">Pronto! Confirme os dados</h4>
           
           <div class="row justify-content-center">
-            <div class="col-md-8">
+            <div class="col-md-9">
                
                <ul class="list-group list-group-light list-group-small mb-4 border rounded shadow-sm">
                  <li class="list-group-item px-4 py-3 d-flex justify-content-between align-items-sm-center flex-column flex-sm-row">
@@ -168,11 +250,15 @@
                  </li>
                  <li class="list-group-item px-4 py-3 d-flex justify-content-between align-items-sm-center flex-column flex-sm-row">
                    <span class="text-muted fw-bold">Data Planejada:</span>
-                   <span class="fw-medium text-dark">{{ solicitacao.dataEvento | date:'dd/MM/yyyy' }}</span>
+                   <span class="fw-medium text-dark">{{ dataEvento | date:'dd/MM/yyyy' }}</span>
                  </li>
                  <li class="list-group-item px-4 py-3 d-flex justify-content-between align-items-sm-center flex-column flex-sm-row">
                    <span class="text-muted fw-bold">Convidados:</span>
-                   <span class="fw-medium text-dark">{{ solicitacao.numeroConvidados }} pessoas</span>
+                   <span class="fw-medium text-dark">{{ numeroConvidados }} pessoas</span>
+                 </li>
+                 <li class="list-group-item px-4 py-3 d-flex justify-content-between align-items-sm-center flex-column flex-sm-row">
+                   <span class="text-muted fw-bold">Endereço:</span>
+                   <span class="fw-medium text-dark text-end">{{ getEnderecoResumido() }}</span>
                  </li>
                  <li class="list-group-item px-4 py-3 d-flex justify-content-between align-items-sm-center flex-column flex-sm-row">
                    <span class="text-muted fw-bold">Tema Principal:</span>
@@ -180,9 +266,9 @@
                  </li>
                </ul>
 
-               <div class="bg-light p-3 rounded" *ngIf="solicitacao.observacoes">
+               <div class="bg-light p-3 rounded" *ngIf="observacoes">
                  <strong class="d-block text-muted small mb-1">Notas adicionais:</strong>
-                 <p class="mb-0 text-dark small" style="white-space: pre-wrap;">{{ solicitacao.observacoes }}</p>
+                 <p class="mb-0 text-dark small" style="white-space: pre-wrap;">{{ observacoes }}</p>
                </div>
 
             </div>
