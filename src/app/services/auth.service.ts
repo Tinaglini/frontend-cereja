@@ -28,15 +28,18 @@ export class AuthService {
           localStorage.setItem('token', token);
           
           let role = null;
+          let userId: number | undefined;
           try {
             const payload = JSON.parse(atob(token.split('.')[1]));
             role = payload.role || payload.roles || payload.authorities || payload.scope || '';
             if (Array.isArray(role)) role = role[0];
+            userId = payload.id || payload.userId || payload.usuarioId;
           } catch (e) {
             console.error('Erro ao decodificar token payload no login', e);
           }
           
           const usuario: Usuario = response.usuario || {
+            id: userId,
             email: credentials.login,
             nome: credentials.login.split('@')[0],
             role: role
@@ -82,9 +85,6 @@ export class AuthService {
     if (!token) return null;
     try {
       const payload = JSON.parse(atob(token.split('.')[1]));
-      // spring boot JWT costuma colocar as roles em um claim de array ou comma-separated string
-      // Vamos tentar algumas convenções comuns, dependendo de como o backend gerou
-      // Se houver múltiplas, pegaremos a de maior privilégio 
       const authClaim = payload.roles || payload.authorities || payload.role || payload.scope || '';
       
       if (Array.isArray(authClaim)) {
@@ -102,6 +102,18 @@ export class AuthService {
       return null;
     } catch (e) {
       console.error('Erro ao decodificar token', e);
+      return null;
+    }
+  }
+
+  // Retorna o ID do usuário logado (do JWT ou localStorage)
+  getUserId(): number | null {
+    const token = this.getToken();
+    if (!token) return null;
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      return payload.id || payload.userId || payload.usuarioId || null;
+    } catch (e) {
       return null;
     }
   }

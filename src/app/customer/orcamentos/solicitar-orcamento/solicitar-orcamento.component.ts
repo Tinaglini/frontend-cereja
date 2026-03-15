@@ -6,7 +6,6 @@ import Swal from 'sweetalert2';
 
 import { TipoEvento } from '../../../models/tipo-evento.model';
 import { TemaFesta } from '../../../models/tema-festa.model';
-import { SolicitacaoOrcamentoRequest } from '../../../models/solicitacao-orcamento.model';
 
 import { TipoEventoService } from '../../../services/tipo-evento.service';
 import { TemaFestaService } from '../../../services/tema-festa.service';
@@ -30,16 +29,15 @@ export class SolicitarOrcamentoComponent implements OnInit {
   tiposEvento: TipoEvento[] = [];
   temas: TemaFesta[] = [];
 
-  solicitacao: Partial<SolicitacaoOrcamentoRequest> = {
-    tipoEventoId: 0,
-    temaFestaId: undefined,
-    dataEvento: '',
-    numeroConvidados: 50,
-    observacoes: '',
-    status: 'PENDENTE'
-  };
+  // Campos do formulário
+  tipoEventoId: number = 0;
+  temaFestaId: number | undefined = undefined;
+  dataEvento: string = '';
+  numeroConvidados: number = 50;
+  observacoes: string = '';
 
-  clienteId: number = 0;
+  // ID do usuário logado (extraído do JWT)
+  usuarioId: number | null = null;
 
   constructor(
     private tipoEventoService: TipoEventoService,
@@ -50,12 +48,7 @@ export class SolicitarOrcamentoComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const user = this.authService.getCurrentUserValue();
-    if (user && user.id) {
-       this.clienteId = user.id; // Assume que o user.id bate com cliente.id (ou precisa buscar num endpoint de perfil)
-       this.solicitacao.clienteId = this.clienteId;
-    }
-
+    this.usuarioId = this.authService.getUserId();
     this.carregarDadosIniciais();
   }
 
@@ -70,11 +63,11 @@ export class SolicitarOrcamentoComponent implements OnInit {
   }
 
   nextStep() {
-    if (this.step === 1 && !this.solicitacao.tipoEventoId) {
+    if (this.step === 1 && !this.tipoEventoId) {
       Swal.fire('Atenção', 'Selecione um tipo de evento para continuar.', 'warning');
       return;
     }
-    if (this.step === 3 && (!this.solicitacao.dataEvento || !this.solicitacao.numeroConvidados)) {
+    if (this.step === 2 && (!this.dataEvento || !this.numeroConvidados)) {
       Swal.fire('Atenção', 'Informe a data do evento e o número de convidados.', 'warning');
       return;
     }
@@ -93,41 +86,58 @@ export class SolicitarOrcamentoComponent implements OnInit {
   }
 
   selecionarTipo(id: number | undefined) {
-    if(id) this.solicitacao.tipoEventoId = id;
+    if (id) this.tipoEventoId = id;
   }
 
   selecionarTema(id: number | undefined) {
-    if(id) {
-        if(this.solicitacao.temaFestaId === id) {
-            this.solicitacao.temaFestaId = undefined; // desmarca
-        } else {
-            this.solicitacao.temaFestaId = id;
-        }
+    if (id) {
+      this.temaFestaId = (this.temaFestaId === id) ? undefined : id;
     }
   }
 
+  // Getter para compatibilidade com o template HTML existente
+  get solicitacao() {
+    return {
+      tipoEventoId: this.tipoEventoId,
+      temaFestaId: this.temaFestaId,
+      dataEvento: this.dataEvento,
+      numeroConvidados: this.numeroConvidados,
+      observacoes: this.observacoes
+    };
+  }
+
   getTipoNome(): string {
-    const t = this.tiposEvento.find(te => te.id === this.solicitacao.tipoEventoId);
+    const t = this.tiposEvento.find(te => te.id === this.tipoEventoId);
     return t ? t.nome : 'Não selecionado';
   }
 
   getTemaNome(): string {
-    if(!this.solicitacao.temaFestaId) return 'Nenhum / Personalizado';
-    const t = this.temas.find(tm => tm.id === this.solicitacao.temaFestaId);
+    if (!this.temaFestaId) return 'Nenhum / Personalizado';
+    const t = this.temas.find(tm => tm.id === this.temaFestaId);
     return t ? t.nome : '';
   }
 
   enviarSolicitacao() {
-    if(!this.clienteId) {
-       Swal.fire('Erro', 'Usuário não identificado. Faça login novamente.', 'error');
-       return;
-    }
-
     this.submitting = true;
     
-    const req = this.solicitacao as SolicitacaoOrcamentoRequest;
-    
-    this.solicitacaoService.salvar(req).subscribe({
+    // Body no formato que o backend espera (objetos aninhados)
+    const body: any = {
+      dataEvento: this.dataEvento,
+      quantidadeConvidados: this.numeroConvidados,
+      tipoEvento: { id: this.tipoEventoId },
+      temas: this.temaFestaId ? [{ id: this.temaFestaId }] : []
+    };
+
+    if (this.observacoes) {
+      body.observacoes = this.observacoes;
+    }
+
+    // Inclui o cliente com ID do usuário logado se disponível
+    if (this.usuarioId) {
+      body.cliente = { id: this.usuarioId };
+    }
+
+    this.solicitacaoService.salvar(body).subscribe({
       next: () => {
         this.submitting = false;
         Swal.fire({
@@ -145,6 +155,5 @@ export class SolicitarOrcamentoComponent implements OnInit {
         Swal.fire('Ops!', 'Ocorreu um erro ao enviar sua solicitação. Tente novamente.', 'error');
       }
     });
-
   }
 }
