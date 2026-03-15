@@ -45,4 +45,8 @@ export class ClienteService {
   buscarPorStatus(status: string): Observable<Cliente[]> {
     return this.http.get<Cliente[]>(this.API + '/status/' + status);
   }
+
+  criarClienteAdmin(dados: { nome: string; email: string; senha: string }): Observable<any> {
+    return this.http.post<any>(environment.SERVIDOR + '/api/admin/clientes', dados);
+  }
 }
