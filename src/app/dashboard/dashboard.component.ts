@@ -6,6 +6,7 @@ import { EnderecoService } from '../services/endereco.service';
 import { TemaFestaService } from '../services/tema-festa.service';
 import { TipoEventoService } from '../services/tipo-evento.service';
 import { NotificationService } from '../services/notification.service';
+import { AuthService } from '../services/auth.service';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -22,15 +23,19 @@ export class DashboardComponent implements OnInit {
     tiposEvento: 0
   };
 
+  isAdmin = false;
+
   constructor(
     private clienteService: ClienteService,
     private enderecoService: EnderecoService,
     private temaFestaService: TemaFestaService,
     private tipoEventoService: TipoEventoService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private authService: AuthService
   ) {}
 
   ngOnInit() {
+    this.isAdmin = this.authService.getUserRole() === 'ROLE_ADMIN';
     this.loadStats();
   }
 

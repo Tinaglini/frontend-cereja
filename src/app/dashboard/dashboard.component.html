@@ -87,7 +87,7 @@
       </div>
       
       <!-- Ação Nova Solicitação -->
-      <div class="col-6 col-md-3">
+      <div *ngIf="!isAdmin" class="col-6 col-md-3">
         <a href="#" class="action-card card h-100 text-decoration-none" (click)="showComingSoon('Solicitações'); $event.preventDefault()">
           <div class="card-body text-center d-flex flex-column align-items-center justify-content-center py-4">
             <div class="action-icon mb-3 text-accent">
@@ -112,7 +112,7 @@
       
       <!-- Ação Tipos de Evento -->
       <div class="col-6 col-md-3">
-        <a href="#" class="action-card card h-100 text-decoration-none" (click)="showComingSoon('Tipos de Evento'); $event.preventDefault()">
+        <a routerLink="/tipos-evento" class="action-card card h-100 text-decoration-none">
           <div class="card-body text-center d-flex flex-column align-items-center justify-content-center py-4">
             <div class="action-icon mb-3 text-dark">
               <i class="fas fa-calendar-alt"></i>
