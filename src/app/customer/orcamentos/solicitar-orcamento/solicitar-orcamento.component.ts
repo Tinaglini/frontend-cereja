@@ -67,7 +67,7 @@ export class SolicitarOrcamentoComponent implements OnInit {
       Swal.fire('Atenção', 'Selecione um tipo de evento para continuar.', 'warning');
       return;
     }
-    if (this.step === 2 && (!this.dataEvento || !this.numeroConvidados)) {
+    if (this.step === 2 && (!this.dataEvento?.trim() || this.numeroConvidados == null || this.numeroConvidados < 1)) {
       Swal.fire('Atenção', 'Informe a data do evento e o número de convidados.', 'warning');
       return;
     }
