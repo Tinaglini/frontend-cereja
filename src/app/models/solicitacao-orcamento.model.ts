@@ -1,3 +1,14 @@
+export interface Endereco {
+  id?: number;
+  rua?: string;
+  numero?: string;
+  complemento?: string;
+  bairro?: string;
+  cidade?: string;
+  estado?: string;
+  cep?: string;
+}
+
 export interface SolicitacaoOrcamento {
   id?: number;
   cliente: Cliente;
@@ -6,6 +17,9 @@ export interface SolicitacaoOrcamento {
   temas?: TemaFesta[];
   dataEvento: Date | string;
   quantidadeConvidados: number;
+  precisaMesasCadeiras?: boolean;
+  endereco?: Endereco;
+  valorPretendido?: number;
   observacoes?: string;
   statusOrcamento: 'PENDENTE' | 'APROVADO' | 'REJEITADO' | 'CANCELADO';
   valorEstimado?: number;

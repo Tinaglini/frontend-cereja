@@ -1,0 +1,136 @@
+<div class="orcamento-resumo-container fade-in">
+
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-end mb-4 pb-3 border-bottom border-black border-opacity-10">
+    <div>
+      <h2 class="display-font text-dark mb-1">Resumo do Orçamento</h2>
+      <p class="text-muted mb-0">Detalhes da sua solicitação.</p>
+    </div>
+    <button class="btn btn-outline-secondary" (click)="voltar()">
+      <i class="fas fa-arrow-left me-2"></i> Voltar
+    </button>
+  </div>
+
+  <!-- Loading -->
+  <div class="text-center py-5" *ngIf="loading">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Carregando...</span>
+    </div>
+    <p class="text-muted mt-3">Carregando orçamento...</p>
+  </div>
+
+  <!-- Erro -->
+  <div class="alert alert-danger d-flex align-items-center gap-2 rounded-3" *ngIf="!loading && erro">
+    <i class="fas fa-exclamation-triangle"></i>
+    <span>{{ erro }}</span>
+  </div>
+
+  <!-- Conteúdo -->
+  <div *ngIf="!loading && solicitacao">
+
+    <!-- Status Banner -->
+    <div class="status-banner rounded-3 p-3 mb-4 d-flex align-items-center justify-content-between"
+         [ngClass]="getStatusClass(solicitacao.statusOrcamento)">
+      <span class="fw-bold fs-6">
+        <i [class]="getStatusIcon(solicitacao.statusOrcamento) + ' me-2'"></i>
+        {{ solicitacao.statusOrcamento }}
+      </span>
+      <span class="small opacity-75">#{{ solicitacao.id }}</span>
+    </div>
+
+    <div class="row g-4">
+
+      <!-- Bloco: Evento -->
+      <div class="col-md-6">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-body p-4">
+            <h6 class="fw-bold text-muted text-uppercase mb-3" style="font-size: 0.75rem; letter-spacing: 0.06em;">
+              <i class="fas fa-calendar-check me-2 text-primary"></i>Evento
+            </h6>
+            <dl class="mb-0 row-gap-2 d-flex flex-column">
+              <div class="d-flex justify-content-between">
+                <dt class="fw-normal text-muted">Tipo</dt>
+                <dd class="mb-0 fw-semibold text-dark">{{ solicitacao.tipoEvento?.nome || '—' }}</dd>
+              </div>
+              <div class="d-flex justify-content-between">
+                <dt class="fw-normal text-muted">Data</dt>
+                <dd class="mb-0 fw-semibold text-dark">{{ solicitacao.dataEvento | date:'dd/MM/yyyy' }}</dd>
+              </div>
+              <div class="d-flex justify-content-between">
+                <dt class="fw-normal text-muted">Convidados</dt>
+                <dd class="mb-0 fw-semibold text-dark">{{ solicitacao.quantidadeConvidados }}</dd>
+              </div>
+              <div class="d-flex justify-content-between">
+                <dt class="fw-normal text-muted">Mesas e Cadeiras</dt>
+                <dd class="mb-0 fw-semibold" [class.text-success]="solicitacao.precisaMesasCadeiras" [class.text-muted]="!solicitacao.precisaMesasCadeiras">
+                  {{ solicitacao.precisaMesasCadeiras ? 'Sim' : 'Não' }}
+                </dd>
+              </div>
+              <div class="d-flex justify-content-between" *ngIf="solicitacao.valorPretendido">
+                <dt class="fw-normal text-muted">Valor pretendido</dt>
+                <dd class="mb-0 fw-semibold text-dark">{{ solicitacao.valorPretendido | currency:'BRL' }}</dd>
+              </div>
+            </dl>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bloco: Temas -->
+      <div class="col-md-6">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-body p-4">
+            <h6 class="fw-bold text-muted text-uppercase mb-3" style="font-size: 0.75rem; letter-spacing: 0.06em;">
+              <i class="fas fa-palette me-2 text-primary"></i>Tema(s)
+            </h6>
+            <div *ngIf="solicitacao.temas && solicitacao.temas.length > 0; else semTema">
+              <span class="badge bg-primary-subtle text-primary rounded-pill px-3 py-2 me-2 mb-2 fw-medium"
+                    *ngFor="let tema of solicitacao.temas">
+                {{ tema.nome }}
+              </span>
+            </div>
+            <ng-template #semTema>
+              <p class="text-muted mb-0">Nenhum tema selecionado.</p>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bloco: Endereço -->
+      <div class="col-md-6" *ngIf="solicitacao.endereco">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-body p-4">
+            <h6 class="fw-bold text-muted text-uppercase mb-3" style="font-size: 0.75rem; letter-spacing: 0.06em;">
+              <i class="fas fa-map-marker-alt me-2 text-primary"></i>Local do Evento
+            </h6>
+            <p class="mb-1 text-dark">
+              {{ solicitacao.endereco.rua }}, {{ solicitacao.endereco.numero }}
+              <span *ngIf="solicitacao.endereco.complemento"> — {{ solicitacao.endereco.complemento }}</span>
+            </p>
+            <p class="mb-1 text-muted">{{ solicitacao.endereco.bairro }}</p>
+            <p class="mb-0 text-muted">{{ solicitacao.endereco.cidade }} / {{ solicitacao.endereco.estado }} &bull; {{ solicitacao.endereco.cep }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bloco: Observações -->
+      <div class="col-md-6" *ngIf="solicitacao.observacoes">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-body p-4">
+            <h6 class="fw-bold text-muted text-uppercase mb-3" style="font-size: 0.75rem; letter-spacing: 0.06em;">
+              <i class="fas fa-comment-alt me-2 text-primary"></i>Observações
+            </h6>
+            <p class="text-dark mb-0">{{ solicitacao.observacoes }}</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Rodapé -->
+    <div class="text-muted small mt-4" *ngIf="solicitacao.dataCriacao">
+      <i class="fas fa-history me-1"></i> Solicitado em {{ solicitacao.dataCriacao | date:'dd/MM/yyyy \'às\' HH:mm' }}
+    </div>
+
+  </div>
+
+</div>
