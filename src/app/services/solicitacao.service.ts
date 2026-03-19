@@ -24,7 +24,7 @@ export class SolicitacaoService {
     return this.http.post<SolicitacaoOrcamento>(this.API, solicitacao);
   }
 
-  atualizar(id: number, solicitacao: SolicitacaoOrcamentoRequest): Observable<SolicitacaoOrcamento> {
+  atualizar(id: number, solicitacao: any): Observable<SolicitacaoOrcamento> {
     return this.http.put<SolicitacaoOrcamento>(this.API + '/' + id, solicitacao);
   }
 

@@ -120,12 +120,27 @@ export class SolicitacaoFormComponent implements OnInit {
 
     this.loading = true;
 
-    // Converte a data string volta para formato compatível se necessário,
-    // garantindo timezone correto (opcional dependendo do backend).
+    let operacao;
 
-    const operacao = this.isEdit && this.id 
-      ? this.solicitacaoService.atualizar(this.id, this.solicitacaoReq)
-      : this.solicitacaoService.salvar(this.solicitacaoReq);
+    if (this.isEdit && this.id) {
+      // O PUT exige objetos aninhados { id } em vez de IDs planos
+      const putPayload: any = {
+        dataEvento: this.solicitacaoReq.dataEvento,
+        quantidadeConvidados: this.solicitacaoReq.numeroConvidados,
+        tipoEvento: { id: this.solicitacaoReq.tipoEventoId },
+        endereco: this.solicitacaoOriginal?.endereco?.id
+          ? { id: this.solicitacaoOriginal.endereco.id }
+          : null,
+        statusOrcamento: this.solicitacaoReq.status,
+        observacoes: this.solicitacaoReq.observacoes,
+      };
+      if (this.solicitacaoReq.temaFestaId) {
+        putPayload.temas = [{ id: this.solicitacaoReq.temaFestaId }];
+      }
+      operacao = this.solicitacaoService.atualizar(this.id, putPayload);
+    } else {
+      operacao = this.solicitacaoService.salvar(this.solicitacaoReq);
+    }
 
     operacao.subscribe({
       next: () => {
@@ -142,11 +157,16 @@ export class SolicitacaoFormComponent implements OnInit {
       },
       error: (erro) => {
         console.error('Erro ao salvar:', erro);
+        console.error('Detalhes do erro:', erro.error);
         this.loading = false;
+        const campos = erro.error?.campos;
+        const detalhe = campos
+          ? Object.entries(campos).map(([k, v]) => `${k}: ${v}`).join('\n')
+          : (erro.error?.erro || 'Ocorreu um erro ao salvar o orçamento. Tente novamente.');
         Swal.fire({
           icon: 'error',
           title: 'Oops...',
-          text: 'Ocorreu um erro ao salvar o orçamento. Tente novamente.'
+          text: detalhe
         });
       }
     });
