@@ -194,33 +194,67 @@
 
       <!-- PASSO 4: TEMA E DETALHES -->
       <div class="step-pane fade-in" *ngIf="step === 4">
-          <h4 class="fw-bold text-dark mb-4 text-center">Gostaria de algum tema específico?</h4>
-          
-          <div class="mb-4 text-center">
-             <p class="text-muted">Selecione um dos nossos temas pré-montados ou pule esta etapa para orçar um tema personalizado.</p>
-             <button class="btn btn-sm btn-outline-secondary rounded-pill" (click)="removerTema()" *ngIf="temaFestaId">
-                Remover Tema Selecionado
-             </button>
+          <h4 class="fw-bold text-dark mb-2 text-center">Gostaria de algum tema específico?</h4>
+          <p class="text-muted text-center mb-4">Selecione um ou mais temas do catálogo, ou sugira um personalizado.</p>
+
+          <!-- Temas selecionados -->
+          <div class="d-flex flex-wrap gap-2 mb-4 justify-content-center" *ngIf="temasSelecionados.length > 0">
+            <span class="badge rounded-pill px-3 py-2 fw-medium d-flex align-items-center gap-2"
+                  [ngClass]="tema.ativo ? 'bg-primary' : 'bg-warning text-dark'"
+                  *ngFor="let tema of temasSelecionados">
+              {{ tema.nome }}
+              <span *ngIf="!tema.ativo" class="opacity-75" style="font-size: 0.7rem;">(aguarda aprovação)</span>
+              <i class="fas fa-times ms-1 cursor-pointer" (click)="removerTema(tema.id)" style="cursor:pointer"></i>
+            </span>
           </div>
 
           <!-- Tema Grid (Scrollable) -->
-          <div class="tema-selector-container px-2 mb-4" style="max-height: 400px; overflow-y: auto;">
+          <div class="tema-selector-container px-2 mb-4" style="max-height: 350px; overflow-y: auto;">
             <div class="row g-3">
               <div class="col-6 col-md-4 col-lg-3" *ngFor="let tema of temas">
-                  <div class="card cursor-pointer border-2 transition-all option-card text-center"
-                       [class.border-primary]="temaFestaId === tema.id"
-                       (click)="selecionarTema(tema.id)">
-                     <div class="card-body p-3">
-                        <div class="color-circle mx-auto mb-2 shadow-sm border" 
-                             [style.background-color]="tema.corPrincipal" 
-                             style="width: 30px; height: 30px; border-radius: 50%;"></div>
-                        <span class="d-block fw-bold small text-dark lh-sm">{{ tema.nome }}</span>
-                     </div>
-                     
-                     <div class="check-indicator position-absolute top-0 end-0 mt-1 me-1 text-primary" *ngIf="temaFestaId === tema.id">
-                         <i class="fas fa-check-circle"></i>
-                     </div>
+                <div class="card cursor-pointer border-2 transition-all option-card text-center position-relative"
+                     [class.border-primary]="temaSelecionado(tema.id)"
+                     [class.bg-primary-soft]="temaSelecionado(tema.id)"
+                     (click)="toggleTema(tema)" style="cursor:pointer">
+                  <div class="card-body p-3">
+                    <div class="color-circle mx-auto mb-2 shadow-sm border"
+                         [style.background-color]="tema.corPrincipal"
+                         style="width: 30px; height: 30px; border-radius: 50%;"></div>
+                    <span class="d-block fw-bold small text-dark lh-sm">{{ tema.nome }}</span>
                   </div>
+                  <div class="check-indicator position-absolute top-0 end-0 mt-1 me-1 text-primary" *ngIf="temaSelecionado(tema.id)">
+                    <i class="fas fa-check-circle"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Input de tema personalizado -->
+          <div class="row justify-content-center mb-4">
+            <div class="col-md-8">
+              <button class="btn btn-outline-secondary btn-sm rounded-pill mb-3"
+                      type="button"
+                      (click)="mostrarInputCustom = !mostrarInputCustom">
+                <i class="fas fa-plus me-2"></i>Meu tema não está na lista
+              </button>
+
+              <div *ngIf="mostrarInputCustom" class="card border-dashed border-primary bg-primary-subtle p-3 rounded-3">
+                <p class="text-muted small mb-2">
+                  <i class="fas fa-info-circle me-1"></i>
+                  Sua sugestão será enviada ao admin para aprovação e já ficará vinculada ao seu orçamento.
+                </p>
+                <div class="d-flex gap-2">
+                  <input type="text" class="form-control form-control-sm"
+                         [(ngModel)]="nomeCustom"
+                         placeholder="Nome do tema personalizado"
+                         (keyup.enter)="sugerirTemaCustom()">
+                  <button class="btn btn-primary btn-sm px-3" (click)="sugerirTemaCustom()"
+                          [disabled]="!nomeCustom.trim() || sugerindoTema">
+                    <span *ngIf="!sugerindoTema"><i class="fas fa-check"></i></span>
+                    <span *ngIf="sugerindoTema"><i class="fas fa-spinner fa-spin"></i></span>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -261,8 +295,8 @@
                    <span class="fw-medium text-dark text-end">{{ getEnderecoResumido() }}</span>
                  </li>
                  <li class="list-group-item px-4 py-3 d-flex justify-content-between align-items-sm-center flex-column flex-sm-row">
-                   <span class="text-muted fw-bold">Tema Principal:</span>
-                   <span class="fw-medium text-dark">{{ getTemaNome() }}</span>
+                   <span class="text-muted fw-bold">Temas:</span>
+                   <span class="fw-medium text-dark">{{ getTemasNomes() }}</span>
                  </li>
                </ul>
 

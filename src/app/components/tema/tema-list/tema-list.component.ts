@@ -16,10 +16,12 @@ import Swal from 'sweetalert2';
 export class TemaListComponent implements OnInit {
   temas: TemaFesta[] = [];
   temasFiltrados: TemaFesta[] = [];
+  temasPendentes: TemaFesta[] = [];
   termoBusca = '';
   filtroStatus: 'todos' | 'ativo' | 'inativo' = 'todos';
   ordenacao: 'nome' | 'preco' | 'data' = 'nome';
   loading = false;
+  loadingPendentes = false;
   isReadOnly = false;
 
   constructor(
@@ -34,6 +36,35 @@ export class TemaListComponent implements OnInit {
     });
 
     this.carregarTemas();
+    if (!this.isReadOnly) {
+      this.carregarPendentes();
+    }
+  }
+
+  carregarPendentes() {
+    this.loadingPendentes = true;
+    this.temaService.buscarPendentes().subscribe({
+      next: (temas) => {
+        this.temasPendentes = temas;
+        this.loadingPendentes = false;
+      },
+      error: () => {
+        this.loadingPendentes = false;
+      }
+    });
+  }
+
+  aprovarTema(id: number) {
+    this.temaService.ativar(id).subscribe({
+      next: () => {
+        this.notificationService.success('Tema aprovado!', 'O tema agora faz parte do catálogo.');
+        this.carregarPendentes();
+        this.carregarTemas();
+      },
+      error: () => {
+        this.notificationService.error('Erro!', 'Não foi possível aprovar o tema.');
+      }
+    });
   }
 
   carregarTemas() {

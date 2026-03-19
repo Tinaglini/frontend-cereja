@@ -14,6 +14,36 @@
     </a>
   </div>
 
+  <!-- Sugestões Pendentes (Admin) -->
+  <div class="card mb-4 border-0 shadow-sm border-start border-warning border-4" *ngIf="!isReadOnly && (loadingPendentes || temasPendentes.length > 0)">
+    <div class="card-body p-4">
+      <h6 class="fw-bold text-warning mb-3 d-flex align-items-center gap-2">
+        <i class="fas fa-clock"></i>
+        Sugestões Aguardando Aprovação
+        <span class="badge bg-warning text-dark rounded-pill ms-1" *ngIf="temasPendentes.length > 0">{{ temasPendentes.length }}</span>
+      </h6>
+
+      <div class="text-center py-3" *ngIf="loadingPendentes">
+        <div class="spinner-border spinner-border-sm text-warning" role="status"></div>
+      </div>
+
+      <div class="d-flex flex-wrap gap-3" *ngIf="!loadingPendentes && temasPendentes.length > 0">
+        <div class="d-flex align-items-center gap-2 bg-warning-subtle rounded-3 px-3 py-2"
+             *ngFor="let tema of temasPendentes">
+          <span class="fw-medium text-dark">{{ tema.nome }}</span>
+          <small class="text-muted" *ngIf="tema.descricao">— {{ tema.descricao }}</small>
+          <button class="btn btn-sm btn-success rounded-pill px-3 ms-2" (click)="aprovarTema(tema.id!)">
+            <i class="fas fa-check me-1"></i> Aprovar
+          </button>
+        </div>
+      </div>
+
+      <p class="text-muted small mb-0" *ngIf="!loadingPendentes && temasPendentes.length === 0">
+        Nenhuma sugestão pendente.
+      </p>
+    </div>
+  </div>
+
   <!-- Filtros -->
   <div class="card mb-4 border-0 shadow-sm">
     <div class="card-body p-4">

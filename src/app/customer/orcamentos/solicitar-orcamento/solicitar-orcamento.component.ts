@@ -20,9 +20,9 @@ import { AuthService } from '../../../services/auth.service';
   styleUrl: './solicitar-orcamento.component.scss'
 })
 export class SolicitarOrcamentoComponent implements OnInit {
-  
+
   step = 1;
-  maxSteps = 5;   // ← agora 5 passos (incluindo endereco)
+  maxSteps = 5;
   loadingData = true;
   submitting = false;
 
@@ -47,11 +47,14 @@ export class SolicitarOrcamentoComponent implements OnInit {
     cep: ''
   };
 
-  // Passo 4 — Tema e Detalhes
-  temaFestaId: number | undefined = undefined;
+  // Passo 4 — Temas e Detalhes
+  temasSelecionados: TemaFesta[] = [];
+  mostrarInputCustom = false;
+  nomeCustom = '';
+  sugerindoTema = false;
   observacoes: string = '';
 
-  // ID do usuário logado (extraído do JWT)
+  // ID do usuário logado
   usuarioId: number | null = null;
 
   constructor(
@@ -70,9 +73,9 @@ export class SolicitarOrcamentoComponent implements OnInit {
   carregarDadosIniciais() {
     this.tipoEventoService.buscarAtivos().subscribe((res: TipoEvento[]) => {
       this.tiposEvento = res;
-      this.temaService.buscarTodos().subscribe((resTemas: any[]) => {
-         this.temas = resTemas.filter((t: any) => t.ativo);
-         this.loadingData = false;
+      this.temaService.buscarAtivos().subscribe((resTemas: TemaFesta[]) => {
+        this.temas = resTemas;
+        this.loadingData = false;
       });
     });
   }
@@ -94,7 +97,7 @@ export class SolicitarOrcamentoComponent implements OnInit {
         return;
       }
     }
-    
+
     if (this.step < this.maxSteps) {
       this.step++;
       window.scrollTo(0, 0);
@@ -112,14 +115,38 @@ export class SolicitarOrcamentoComponent implements OnInit {
     if (id) this.tipoEventoId = id;
   }
 
-  selecionarTema(id: number | undefined) {
-    if (id) {
-      this.temaFestaId = (this.temaFestaId === id) ? undefined : id;
+  temaSelecionado(id: number | undefined): boolean {
+    return !!id && this.temasSelecionados.some(t => t.id === id);
+  }
+
+  toggleTema(tema: TemaFesta) {
+    const idx = this.temasSelecionados.findIndex(t => t.id === tema.id);
+    if (idx >= 0) {
+      this.temasSelecionados.splice(idx, 1);
+    } else {
+      this.temasSelecionados.push(tema);
     }
   }
 
-  removerTema() {
-    this.temaFestaId = undefined;
+  removerTema(id: number | undefined) {
+    if (id) this.temasSelecionados = this.temasSelecionados.filter(t => t.id !== id);
+  }
+
+  sugerirTemaCustom() {
+    if (!this.nomeCustom.trim()) return;
+    this.sugerindoTema = true;
+    this.temaService.sugerirTema({ nome: this.nomeCustom.trim() }).subscribe({
+      next: (temaCriado) => {
+        this.sugerindoTema = false;
+        this.temasSelecionados.push(temaCriado);
+        this.nomeCustom = '';
+        this.mostrarInputCustom = false;
+      },
+      error: () => {
+        this.sugerindoTema = false;
+        Swal.fire('Ops!', 'Não foi possível sugerir o tema. Tente novamente.', 'error');
+      }
+    });
   }
 
   getTipoNome(): string {
@@ -127,10 +154,9 @@ export class SolicitarOrcamentoComponent implements OnInit {
     return t ? t.nome : 'Não selecionado';
   }
 
-  getTemaNome(): string {
-    if (!this.temaFestaId) return 'Nenhum / Personalizado';
-    const t = this.temas.find(tm => tm.id === this.temaFestaId);
-    return t ? t.nome : '';
+  getTemasNomes(): string {
+    if (this.temasSelecionados.length === 0) return 'Nenhum / Personalizado';
+    return this.temasSelecionados.map(t => t.nome).join(', ');
   }
 
   getEnderecoResumido(): string {
@@ -141,13 +167,12 @@ export class SolicitarOrcamentoComponent implements OnInit {
 
   enviarSolicitacao() {
     this.submitting = true;
-    
-    // Body no formato exato que o backend exige
+
     const body: any = {
       dataEvento: this.dataEvento,
       quantidadeConvidados: this.numeroConvidados,
       tipoEvento: { id: this.tipoEventoId },
-      temas: this.temaFestaId ? [{ id: this.temaFestaId }] : [],
+      temas: this.temasSelecionados.map(t => ({ id: t.id })),
       endereco: { ...this.endereco }
     };
 

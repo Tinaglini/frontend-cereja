@@ -83,10 +83,16 @@
               <i class="fas fa-palette me-2 text-primary"></i>Tema(s)
             </h6>
             <div *ngIf="solicitacao.temas && solicitacao.temas.length > 0; else semTema">
-              <span class="badge bg-primary-subtle text-primary rounded-pill px-3 py-2 me-2 mb-2 fw-medium"
-                    *ngFor="let tema of solicitacao.temas">
-                {{ tema.nome }}
-              </span>
+              <div class="d-flex flex-wrap gap-2">
+                <span *ngFor="let tema of solicitacao.temas"
+                      class="badge rounded-pill px-3 py-2 fw-medium d-flex align-items-center gap-2"
+                      [ngClass]="tema.ativo ? 'bg-primary-subtle text-primary' : 'bg-warning-subtle text-warning-emphasis'">
+                  {{ tema.nome }}
+                  <span *ngIf="!tema.ativo" class="badge bg-warning text-dark rounded-pill" style="font-size: 0.65rem;">
+                    <i class="fas fa-clock me-1"></i>Aguardando aprovação
+                  </span>
+                </span>
+              </div>
             </div>
             <ng-template #semTema>
               <p class="text-muted mb-0">Nenhum tema selecionado.</p>

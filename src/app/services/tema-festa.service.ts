@@ -40,4 +40,16 @@ export class TemaFestaService {
   buscarAtivos(): Observable<TemaFesta[]> {
     return this.http.get<TemaFesta[]>(this.API + '/ativos');
   }
+
+  buscarPendentes(): Observable<TemaFesta[]> {
+    return this.http.get<TemaFesta[]>(this.API + '/pendentes');
+  }
+
+  sugerirTema(tema: { nome: string; descricao?: string }): Observable<TemaFesta> {
+    return this.http.post<TemaFesta>(this.API, tema);
+  }
+
+  ativar(id: number): Observable<TemaFesta> {
+    return this.http.patch<TemaFesta>(this.API + '/' + id + '/ativar', {});
+  }
 }
