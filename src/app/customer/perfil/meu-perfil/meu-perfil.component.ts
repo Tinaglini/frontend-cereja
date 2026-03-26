@@ -11,9 +11,15 @@ import Swal from 'sweetalert2';
   templateUrl: './meu-perfil.component.html',
   styleUrl: './meu-perfil.component.scss'
 })
+interface PerfilForm {
+  nome: string;
+  email: string;
+  telefone: string;
+}
+
 export class MeuPerfilComponent implements OnInit {
 
-  usuario: any = {
+  usuario: PerfilForm = {
     nome: '',
     email: '',
     telefone: ''

@@ -1,7 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { TemaFestaService } from '../../../services/tema-festa.service';
 import { NotificationService } from '../../../services/notification.service';
 import { TemaFesta } from '../../../models/tema-festa.model';
@@ -13,7 +15,7 @@ import Swal from 'sweetalert2';
   templateUrl: './tema-list.component.html',
   styleUrl: './tema-list.component.scss'
 })
-export class TemaListComponent implements OnInit {
+export class TemaListComponent implements OnInit, OnDestroy {
   temas: TemaFesta[] = [];
   temasFiltrados: TemaFesta[] = [];
   temasPendentes: TemaFesta[] = [];
@@ -24,6 +26,8 @@ export class TemaListComponent implements OnInit {
   loadingPendentes = false;
   isReadOnly = false;
 
+  private destroy$ = new Subject<void>();
+
   constructor(
     private temaService: TemaFestaService,
     private notificationService: NotificationService,
@@ -31,7 +35,7 @@ export class TemaListComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.route.data.subscribe(data => {
+    this.route.data.pipe(takeUntil(this.destroy$)).subscribe(data => {
       this.isReadOnly = !!data['isReadOnlyRole'];
     });
 
@@ -178,6 +182,11 @@ export class TemaListComponent implements OnInit {
 
   getTemasInativos(): number {
     return this.temas.filter(t => !t.ativo).length;
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }
 
