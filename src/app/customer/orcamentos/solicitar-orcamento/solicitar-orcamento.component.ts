@@ -168,7 +168,7 @@ export class SolicitarOrcamentoComponent implements OnInit {
   enviarSolicitacao() {
     this.submitting = true;
 
-    const body: any = {
+    const body: Record<string, unknown> = {
       dataEvento: this.dataEvento,
       quantidadeConvidados: this.numeroConvidados,
       tipoEvento: { id: this.tipoEventoId },
@@ -177,11 +177,11 @@ export class SolicitarOrcamentoComponent implements OnInit {
     };
 
     if (this.observacoes?.trim()) {
-      body.observacoes = this.observacoes;
+      body['observacoes'] = this.observacoes;
     }
 
     if (this.usuarioId) {
-      body.cliente = { id: this.usuarioId };
+      body['cliente'] = { id: this.usuarioId };
     }
 
     this.solicitacaoService.salvar(body).subscribe({

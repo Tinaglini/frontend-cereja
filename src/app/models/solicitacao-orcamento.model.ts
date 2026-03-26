@@ -1,27 +1,19 @@
-export interface Endereco {
-  id?: number;
-  rua?: string;
-  numero?: string;
-  complemento?: string;
-  bairro?: string;
-  cidade?: string;
-  estado?: string;
-  cep?: string;
-}
+import { Endereco } from './endereco.model';
+import { StatusOrcamento } from '../shared/utils/status.utils';
 
 export interface SolicitacaoOrcamento {
   id?: number;
-  cliente: Cliente;
-  tipoEvento: TipoEvento;
-  temaFesta?: TemaFesta;
-  temas?: TemaFesta[];
+  cliente: SolicitacaoCliente;
+  tipoEvento: SolicitacaoTipoEvento;
+  temaFesta?: SolicitacaoTemaFesta;
+  temas?: SolicitacaoTemaFesta[];
   dataEvento: Date | string;
   quantidadeConvidados: number;
   precisaMesasCadeiras?: boolean;
   endereco?: Endereco;
   valorPretendido?: number;
   observacoes?: string;
-  statusOrcamento: 'PENDENTE' | 'APROVADO' | 'REJEITADO' | 'CANCELADO';
+  statusOrcamento: StatusOrcamento;
   valorEstimado?: number;
   dataCriacao?: Date | string;
 }
@@ -36,7 +28,7 @@ export interface SolicitacaoOrcamentoRequest {
   status?: string;
 }
 
-export interface Cliente {
+export interface SolicitacaoCliente {
   id?: number;
   nome: string;
   email?: string;
@@ -44,7 +36,7 @@ export interface Cliente {
   usuario?: { id?: number; login?: string };
 }
 
-export interface TipoEvento {
+export interface SolicitacaoTipoEvento {
   id?: number;
   nome: string;
   descricao?: string;
@@ -52,7 +44,7 @@ export interface TipoEvento {
   capacidadeMaxima?: number;
 }
 
-export interface TemaFesta {
+export interface SolicitacaoTemaFesta {
   id?: number;
   nome: string;
   descricao?: string;

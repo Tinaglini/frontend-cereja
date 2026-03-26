@@ -1,11 +1,11 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, OnDestroy, Output, EventEmitter } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { BuscaService, ResultadoBusca } from '../../services/busca.service';
 import { Usuario } from '../../models/usuario.model';
-import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, switchMap, takeUntil } from 'rxjs/operators';
 import { Subject, of } from 'rxjs';
 import Swal from 'sweetalert2';
 
@@ -15,19 +15,19 @@ import Swal from 'sweetalert2';
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.scss']
 })
-export class NavbarComponent implements OnInit {
-  
+export class NavbarComponent implements OnInit, OnDestroy {
+
   isLoggedIn = false;
   currentUser: Usuario | null = null;
-  
+
   @Output() toggleSidebarEvent = new EventEmitter<void>();
-  
-  // Busca
+
   termoBusca = '';
   resultados: ResultadoBusca[] = [];
   mostrarResultados = false;
   buscando = false;
   private buscaSubject = new Subject<string>();
+  private destroy$ = new Subject<void>();
 
   constructor(
     private router: Router,
@@ -36,23 +36,19 @@ export class NavbarComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Escuta as mudanças no status de login
-    this.authService.isLoggedIn().subscribe(status => {
+    this.authService.isLoggedIn().pipe(takeUntil(this.destroy$)).subscribe(status => {
       this.isLoggedIn = status;
     });
 
-    // Escuta as mudanças nos dados do usuário
-    this.authService.getCurrentUser().subscribe(user => {
+    this.authService.getCurrentUser().pipe(takeUntil(this.destroy$)).subscribe(user => {
       this.currentUser = user;
     });
 
-    // Verificar dados iniciais
     const initialUser = this.authService.getCurrentUserValue();
     if (initialUser) {
       this.currentUser = initialUser;
     }
 
-    // Configurar busca com debounce
     this.buscaSubject.pipe(
       debounceTime(300),
       distinctUntilChanged(),
@@ -64,12 +60,18 @@ export class NavbarComponent implements OnInit {
         }
         this.buscando = true;
         return this.buscaService.buscar(termo);
-      })
+      }),
+      takeUntil(this.destroy$)
     ).subscribe(resultados => {
       this.resultados = resultados;
       this.buscando = false;
       this.mostrarResultados = resultados.length > 0 && this.termoBusca.length >= 2;
     });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   navigateTo(path: string) {

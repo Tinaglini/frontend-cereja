@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, ActivatedRoute, Router } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
 import { SolicitacaoService } from '../../../services/solicitacao.service';
 import { SolicitacaoOrcamento } from '../../../models/solicitacao-orcamento.model';
+import { getStatusClass, getStatusIcon } from '../../../shared/utils/status.utils';
 
 @Component({
   selector: 'app-orcamento-resumo',
@@ -16,6 +18,9 @@ export class OrcamentoResumoComponent implements OnInit {
   solicitacao: SolicitacaoOrcamento | null = null;
   loading = true;
   erro: string | null = null;
+
+  getStatusClass = getStatusClass;
+  getStatusIcon = getStatusIcon;
 
   constructor(
     private route: ActivatedRoute,
@@ -34,37 +39,17 @@ export class OrcamentoResumoComponent implements OnInit {
         this.solicitacao = solicitacao;
         this.loading = false;
       },
-      error: (err) => {
+      error: (err: HttpErrorResponse) => {
         this.loading = false;
         if (err.status === 403) {
-          this.erro = 'Você não tem permissão para visualizar este orçamento.';
+          this.erro = 'Voce nao tem permissao para visualizar este orcamento.';
         } else if (err.status === 404) {
-          this.erro = 'Orçamento não encontrado.';
+          this.erro = 'Orcamento nao encontrado.';
         } else {
-          this.erro = 'Erro ao carregar o orçamento. Tente novamente.';
+          this.erro = 'Erro ao carregar o orcamento. Tente novamente.';
         }
       }
     });
-  }
-
-  getStatusClass(status: string): string {
-    switch (status) {
-      case 'PENDENTE': return 'bg-warning text-dark';
-      case 'APROVADO': return 'bg-success text-white';
-      case 'REJEITADO': return 'bg-danger text-white';
-      case 'CANCELADO': return 'bg-secondary text-white';
-      default: return 'bg-light text-dark';
-    }
-  }
-
-  getStatusIcon(status: string): string {
-    switch (status) {
-      case 'PENDENTE': return 'fas fa-clock';
-      case 'APROVADO': return 'fas fa-check-circle';
-      case 'REJEITADO': return 'fas fa-times-circle';
-      case 'CANCELADO': return 'fas fa-ban';
-      default: return 'fas fa-info-circle';
-    }
   }
 
   voltar(): void {

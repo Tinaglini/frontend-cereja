@@ -1,13 +1,12 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
-import { Observable } from 'rxjs';
 import { AuthService } from '../services/auth.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CustomerGuard implements CanActivate {
-  
+
   constructor(
     private authService: AuthService,
     private router: Router
@@ -16,9 +15,9 @@ export class CustomerGuard implements CanActivate {
   canActivate(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
-  ): Observable<boolean> | Promise<boolean> | boolean {
-    
-    if (!this.authService.getToken() || !this.authService.isLoggedIn()) {
+  ): boolean {
+    if (!this.authService.getToken() || this.authService.isTokenExpired()) {
+      this.authService.logout();
       this.router.navigate(['/login']);
       return false;
     }

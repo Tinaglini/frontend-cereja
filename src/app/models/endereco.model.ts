@@ -1,6 +1,7 @@
 export interface Endereco {
   id?: number;
-  rua: string;
+  rua?: string;
+  logradouro?: string;
   numero: string;
   complemento?: string;
   bairro: string;
@@ -8,10 +9,12 @@ export interface Endereco {
   estado: string;
   cep: string;
   clienteId?: number;
+  cliente?: { id?: number };
 }
 
 export interface EnderecoRequest {
-  rua: string;
+  rua?: string;
+  logradouro?: string;
   numero: string;
   complemento?: string;
   bairro: string;

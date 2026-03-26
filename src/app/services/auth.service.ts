@@ -5,6 +5,17 @@ import { tap } from 'rxjs/operators';
 import { LoginRequest, LoginResponse, Usuario } from '../models/usuario.model';
 import { environment } from '../../environments/environment';
 
+interface JwtPayload {
+  id?: number;
+  userId?: number;
+  usuarioId?: number;
+  role?: string | string[];
+  roles?: string | string[];
+  authorities?: string | string[];
+  scope?: string | string[];
+  exp?: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -12,47 +23,36 @@ export class AuthService {
   private readonly loginUrl = environment.SERVIDOR + '/api/auth/login';
   private readonly registerUrl = environment.SERVIDOR + '/api/auth/registrar';
 
-  // Este BehaviorSubject vai "transmitir" o status de login para quem quiser ouvir (como a Navbar)
   private loggedIn = new BehaviorSubject<boolean>(this.hasToken());
-  
-  // BehaviorSubject para armazenar dados do usuário logado
   private currentUser = new BehaviorSubject<Usuario | null>(this.getStoredUser());
 
   constructor(private http: HttpClient) {}
 
-  registrar(dados: { nome: string; email: string; senha: string }): Observable<any> {
-    return this.http.post<any>(this.registerUrl, dados);
+  registrar(dados: { nome: string; email: string; senha: string }): Observable<LoginResponse> {
+    return this.http.post<LoginResponse>(this.registerUrl, dados);
   }
 
-
-  login(credentials: LoginRequest): Observable<any> {
-    return this.http.post<any>(this.loginUrl, credentials).pipe(
+  login(credentials: LoginRequest): Observable<LoginResponse> {
+    return this.http.post<LoginResponse>(this.loginUrl, credentials).pipe(
       tap(response => {
         const token = response.tokenJWT || response.token;
         if (token) {
           localStorage.setItem('token', token);
-          
-          let role = null;
-          let userId: number | undefined;
-          try {
-            const payload = JSON.parse(atob(token.split('.')[1]));
-            role = payload.role || payload.roles || payload.authorities || payload.scope || '';
-            if (Array.isArray(role)) role = role[0];
-            userId = payload.id || payload.userId || payload.usuarioId;
-          } catch (e) {
-            console.error('Erro ao decodificar token payload no login', e);
-          }
-          
+
+          const payload = this.decodeToken(token);
+          const role = payload ? this.extractRole(payload) : null;
+          const userId = payload?.id || payload?.userId || payload?.usuarioId;
+
           const usuario: Usuario = response.usuario || {
             id: userId,
             email: credentials.login,
             nome: credentials.login.split('@')[0],
-            role: role
+            role: role ?? undefined
           };
 
           localStorage.setItem('user', JSON.stringify(usuario));
           this.currentUser.next(usuario);
-          this.loggedIn.next(true); // Avisa que o login foi feito com sucesso
+          this.loggedIn.next(true);
         }
       })
     );
@@ -62,65 +62,68 @@ export class AuthService {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     this.currentUser.next(null);
-    this.loggedIn.next(false); // Avisa que o logout foi feito
+    this.loggedIn.next(false);
   }
 
   getToken(): string | null {
     return localStorage.getItem('token');
   }
 
-  // A Navbar vai "ouvir" este Observable para saber se mostra "Login" ou "Logout"
   isLoggedIn(): Observable<boolean> {
     return this.loggedIn.asObservable();
   }
 
-  // Método para obter dados do usuário atual
   getCurrentUser(): Observable<Usuario | null> {
     return this.currentUser.asObservable();
   }
 
-  // Método para obter dados do usuário atual (síncrono)
   getCurrentUserValue(): Usuario | null {
     return this.currentUser.value;
   }
 
-  // Verifica qual a role do token decodificado
   getUserRole(): string | null {
-    const token = this.getToken();
+    const payload = this.decodeToken(this.getToken());
+    if (!payload) return null;
+    return this.extractRole(payload);
+  }
+
+  getUserId(): number | null {
+    const payload = this.decodeToken(this.getToken());
+    if (!payload) return null;
+    return payload.id || payload.userId || payload.usuarioId || null;
+  }
+
+  isTokenExpired(): boolean {
+    const payload = this.decodeToken(this.getToken());
+    if (!payload?.exp) return true;
+    return Date.now() >= payload.exp * 1000;
+  }
+
+  private decodeToken(token: string | null): JwtPayload | null {
     if (!token) return null;
     try {
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      const authClaim = payload.roles || payload.authorities || payload.role || payload.scope || '';
-      
-      if (Array.isArray(authClaim)) {
-        if (authClaim.includes('ROLE_ADMIN')) return 'ROLE_ADMIN';
-        if (authClaim.includes('ROLE_USER')) return 'ROLE_USER';
-        return authClaim[0] || null;
-      }
-      
-      if (typeof authClaim === 'string') {
-        if (authClaim.includes('ROLE_ADMIN')) return 'ROLE_ADMIN';
-        if (authClaim.includes('ROLE_USER')) return 'ROLE_USER';
-        return authClaim;
-      }
-
-      return null;
-    } catch (e) {
-      console.error('Erro ao decodificar token', e);
+      return JSON.parse(atob(token.split('.')[1]));
+    } catch {
       return null;
     }
   }
 
-  // Retorna o ID do usuário logado (do JWT ou localStorage)
-  getUserId(): number | null {
-    const token = this.getToken();
-    if (!token) return null;
-    try {
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      return payload.id || payload.userId || payload.usuarioId || null;
-    } catch (e) {
-      return null;
+  private extractRole(payload: JwtPayload): string | null {
+    const authClaim = payload.roles || payload.authorities || payload.role || payload.scope || '';
+
+    if (Array.isArray(authClaim)) {
+      if (authClaim.includes('ROLE_ADMIN')) return 'ROLE_ADMIN';
+      if (authClaim.includes('ROLE_USER')) return 'ROLE_USER';
+      return authClaim[0] || null;
     }
+
+    if (typeof authClaim === 'string') {
+      if (authClaim.includes('ROLE_ADMIN')) return 'ROLE_ADMIN';
+      if (authClaim.includes('ROLE_USER')) return 'ROLE_USER';
+      return authClaim || null;
+    }
+
+    return null;
   }
 
   private hasToken(): boolean {
@@ -129,15 +132,11 @@ export class AuthService {
 
   private getStoredUser(): Usuario | null {
     const userStr = localStorage.getItem('user');
-    if (userStr) {
-      try {
-        const user = JSON.parse(userStr);
-        return user;
-      } catch (error) {
-        console.error('Erro ao fazer parse do usuário:', error);
-        return null;
-      }
+    if (!userStr) return null;
+    try {
+      return JSON.parse(userStr);
+    } catch {
+      return null;
     }
-    return null;
   }
 }

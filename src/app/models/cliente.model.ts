@@ -1,3 +1,5 @@
+import { Endereco } from './endereco.model';
+
 export interface Cliente {
   id?: number;
   nome: string;
@@ -9,17 +11,11 @@ export interface Cliente {
   statusCadastro?: 'COMPLETO' | 'INCOMPLETO';
   endereco?: Endereco;
   dataCadastro?: Date;
-  solicitacoes?: any[];
+  solicitacoes?: SolicitacaoResumo[];
 }
 
-export interface Endereco {
+export interface SolicitacaoResumo {
   id?: number;
-  logradouro: string;
-  numero: string;
-  complemento?: string;
-  bairro: string;
-  cidade: string;
-  estado: string;
-  cep: string;
-  cliente?: Cliente;
+  statusOrcamento?: string;
+  dataEvento?: Date | string;
 }

@@ -1,7 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { SolicitacaoService } from '../../../services/solicitacao.service';
 import { ClienteService } from '../../../services/cliente.service';
 import { TipoEventoService } from '../../../services/tipo-evento.service';
@@ -12,6 +14,16 @@ import { TipoEvento } from '../../../models/tipo-evento.model';
 import { TemaFesta } from '../../../models/tema-festa.model';
 import Swal from 'sweetalert2';
 
+interface SolicitacaoPutPayload {
+  dataEvento: Date | string;
+  quantidadeConvidados?: number;
+  tipoEvento: { id: number };
+  endereco: { id: number } | null;
+  statusOrcamento?: string;
+  observacoes?: string;
+  temas?: { id: number }[];
+}
+
 @Component({
   selector: 'app-solicitacao-form',
   standalone: true,
@@ -19,13 +31,11 @@ import Swal from 'sweetalert2';
   templateUrl: './solicitacao-form.component.html',
   styleUrl: './solicitacao-form.component.scss'
 })
-export class SolicitacaoFormComponent implements OnInit {
-  // Dados de domínio para selects
+export class SolicitacaoFormComponent implements OnInit, OnDestroy {
   clientes: Cliente[] = [];
   tiposEvento: TipoEvento[] = [];
   temas: TemaFesta[] = [];
 
-  // Model para o formulário - usamos a request simplificada
   solicitacaoReq: SolicitacaoOrcamentoRequest = {
     clienteId: 0,
     tipoEventoId: 0,
@@ -35,13 +45,13 @@ export class SolicitacaoFormComponent implements OnInit {
     observacoes: '',
     status: 'PENDENTE'
   };
-  
+
   isEdit = false;
   loading = false;
   id: number | null = null;
-  
-  // Apenas para edição carregar os dados originais se necessário logica avançada
   solicitacaoOriginal?: SolicitacaoOrcamento;
+
+  private destroy$ = new Subject<void>();
 
   constructor(
     private solicitacaoService: SolicitacaoService,
@@ -54,8 +64,8 @@ export class SolicitacaoFormComponent implements OnInit {
 
   ngOnInit(): void {
     this.carregarDominios();
-    
-    this.route.paramMap.subscribe(params => {
+
+    this.route.paramMap.pipe(takeUntil(this.destroy$)).subscribe(params => {
       const idParam = params.get('id');
       if (idParam) {
         this.isEdit = true;
@@ -63,6 +73,11 @@ export class SolicitacaoFormComponent implements OnInit {
         this.carregarSolicitacao(this.id);
       }
     });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   carregarDominios(): void {
@@ -124,10 +139,10 @@ export class SolicitacaoFormComponent implements OnInit {
 
     if (this.isEdit && this.id) {
       // O PUT exige objetos aninhados { id } em vez de IDs planos
-      const putPayload: any = {
+      const putPayload: SolicitacaoPutPayload = {
         dataEvento: this.solicitacaoReq.dataEvento,
         quantidadeConvidados: this.solicitacaoReq.numeroConvidados,
-        tipoEvento: { id: this.solicitacaoReq.tipoEventoId },
+        tipoEvento: { id: this.solicitacaoReq.tipoEventoId! },
         endereco: this.solicitacaoOriginal?.endereco?.id
           ? { id: this.solicitacaoOriginal.endereco.id }
           : null,
